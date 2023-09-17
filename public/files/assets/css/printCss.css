@@ -1,0 +1,14 @@
+@media print {
+    .divFooter {
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+    }
+	body {
+	caret-color: transparent;
+	cursor: none;
+	}
+}
+.divFooter {
+    width: 100%;
+}
