@@ -355,7 +355,19 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-sm-6" id="totalAmount"></div>
+                                            <div class="col-sm-6">
+                                                <h6 id="totalAmount"></h6>
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped table-bordered" id="payment_mode_total">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Payment Mode</th>
+                                                                <th>Total</th>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
+                                            </div>
                                             {{-- <div class="col-sm-3" id="closingBalance"></div> --}}
                                         </div>
                                     </div>
@@ -876,6 +888,12 @@
                     $('#openingBalance').val(result.openingBalance);
                     var htmlResult='<strong>Total Fees: </strong>'+result.totalFees+'&nbsp;&nbsp;<strong>Total Received: </strong>'+(result.totalFees-result.balanceAmount)+'&nbsp;&nbsp;<strong>Closing Balance: </strong>'+result.closingBalance;
                     $('#totalAmount').html(htmlResult);
+                    console.log(result.paymethod_total);
+                    $('#payment_mode_total').empty();
+                    $.each( result.paymethod_total, function( key, val ) {
+                        let paymode_total_html = '<tr><td><strong>'+val.paymentMode+': </strong></td><td>'+val.totalFee+'</td></tr>';
+                        $('#payment_mode_total').append(paymode_total_html);
+                    });
                    // $('#closingBalance').html('<h8>Closing Balance: </h8>'+result.closingBalance);
                     if(result.allowEdit)
                     {

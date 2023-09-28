@@ -248,12 +248,19 @@ class ReportsController extends Controller
                 ->whereDate('dtStart', '<=', Carbon::createFromFormat('Y-m-d', $dtTo))
                 ->sum('feeAmount');
 
-                $balanceAmount = MyEvent::whereDate('dtStart', '>=', Carbon::createFromFormat('Y-m-d', $dtFrom))
+            $balanceAmount = MyEvent::whereDate('dtStart', '>=', Carbon::createFromFormat('Y-m-d', $dtFrom))
                 ->whereDate('dtStart', '<=', Carbon::createFromFormat('Y-m-d', $dtTo)) ->sum('balancePayment');
+
+            $paymethod_total = MyEvent::select('paymentMode', DB::raw('SUM(feeAmount) as totalFee'))
+                ->where('dtStart', '>=', Carbon::createFromFormat('Y-m-d', $dtFrom))
+                ->where('dtStart', '<=', Carbon::createFromFormat('Y-m-d', $dtTo))
+                ->where('paymentMode', '!=', '')
+                ->groupBy('paymentMode')
+                ->get();
 
             $closingBalance = $openingBalance + ($totalFees-$balanceAmount);
             return response()->json(array("openingBalance" => $openingBalance, "totalFees" => $totalFees,
-            "closingBalance" => $closingBalance, "allowEdit" => $allowEdit, "balanceAmount"=>$balanceAmount), 200);
+            "closingBalance" => $closingBalance, "allowEdit" => $allowEdit, "balanceAmount"=>$balanceAmount, "paymethod_total" => $paymethod_total), 200);
         } catch (\Exception $ex) {
             return response()->json(array("error" => $ex->getMessage()), 500);
         }
