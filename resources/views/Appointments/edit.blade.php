@@ -76,11 +76,14 @@
                                                             <h5>Appointment Info</h5>
                                                         </div>
                                                         <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Case ID</label>
+                                                    <label class="col-sm-3 col-form-label">Case ID </label>
                                                     <div class="col-sm-9">
+                                                        <div class="d-flex justify-content-between">
                                                         <input type="text" {{$appointment->caseId!='NC'?'readonly':''}} name="caseId" id="caseId"
                                                                class="form-control {{ $errors->has('caseId') ? ' is-invalid' : '' }}"
                                                                value="{{$appointment->caseId}}">
+                                                        <a href='/customers/editCustomer/{{ $customer->id }}' class='btn waves-effect waves-light btn-primary' title='Edit'>Edit</a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 

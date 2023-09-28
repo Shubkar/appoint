@@ -93,6 +93,10 @@
                                                     Mobile Number
                                                 </th>
                                                 <th class="sorting" tabindex="0" aria-controls="footer-search"
+                                                    aria-label="Office: activate to sort column ascending">
+                                                    Registerd On
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="footer-search"
                                                     aria-label="Salary: activate to sort column ascending">
                                                     Action
                                                 </th>
@@ -178,6 +182,7 @@
                     {"data": "name"},
                     {"data": "email"},
                     {"data": "mobile"},
+                    {"data": "registered_date"},
                     {"data": "action","searchable": false},
                 ],
                 "deferRender": true,

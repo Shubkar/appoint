@@ -107,9 +107,10 @@ class MyEventsController extends Controller
         }
 
         $calendarUrl=User::find($appointment->userId)->calendarUrl;
-
+        $customer = Customer::select('id')->where('caseId', $appointment->caseId)->first();
+        
          return
-        view('Appointments.edit',compact('appointment','today','appointmentDate','appointmentTime','paidAmount','calendarUrl','pharmacistNo','user','paymodes'));
+        view('Appointments.edit',compact('appointment','today','appointmentDate','appointmentTime','paidAmount','calendarUrl','pharmacistNo','user','paymodes','customer'));
     }
 
     public function sickLeave($appointmentId)
