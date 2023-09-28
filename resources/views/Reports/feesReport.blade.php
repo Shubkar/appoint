@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('headerScripts')
-
+ 
     <link rel="stylesheet" type="text/css" href="/files/assets/pages/advance-elements/css/bootstrap-datetimepicker.css">
 
     <link rel="stylesheet" type="text/css"
