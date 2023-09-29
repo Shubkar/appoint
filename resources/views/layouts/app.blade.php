@@ -344,6 +344,11 @@ header("Pragma: no-cache");
                                                 <span class="pcoded-mtext">Settings</span>
                                             </a>
                                         </li>
+                                        <li class="{{ (request()->segment(1) == 'archive') ? 'active' : '' }}">
+                                            <a href="/archive" class="waves-effect waves-dark">
+                                                <span class="pcoded-mtext">Archive</span>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </li>
                             </ul>
