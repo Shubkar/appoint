@@ -50,6 +50,8 @@ Route::post('/deletpateintFile','CustomerController@deletpateintFile');
 Route::get('/archive','CustomerController@archive');
 Route::get('/fetch_all_archive_files','CustomerController@fetch_all_archive_files');
 Route::post('/restorepateintFile','CustomerController@restorepateintFile');
+Route::get('/photo/{caseId}','CustomerController@photo');
+Route::post('/webcam_capture','CustomerController@webcam_capture')->name('webcam_capture');
 
 Route::get('/appointments/manageAppointment','AppointmentController@index');
 Route::get('/letters/myAppointments','AppointmentController@getMyAppointments');

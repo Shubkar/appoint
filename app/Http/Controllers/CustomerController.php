@@ -67,8 +67,11 @@ class CustomerController extends Controller
                 }
                 if(!empty($customer->caseId)) {
                     $action=$action." | "."<a href='/directory/".$customer->caseId."'
-                        class='btn waves-effect waves-light btn-success' title='Inactive'><i class=\"feather icon-folder\"></i></a>";
+                        class='btn waves-effect waves-light btn-success' title='Directory'><i class=\"feather icon-folder\"></i></a>";
                 }
+
+                $action=$action." | "."<a href='/photo/".$customer->id."'
+                        class='btn waves-effect waves-light btn-warning' title='Capture profil photo'><i class=\"feather icon-camera\"></i></a>";
                 
             return $action;
         })
@@ -95,6 +98,11 @@ class CustomerController extends Controller
             return view('Customer.index');
         }
 
+    }
+
+    function photo($custId) {
+        $Customer = Customer::where('id', $custId)->select('name')->first();
+        return view('Customer.photo',compact('custId','Customer'));
     }
 
     function directory($caseId) {
@@ -182,7 +190,7 @@ class CustomerController extends Controller
             $validator = Validator::make($request->all(), [
                 'title' => 'required',
                 'upload_patient_file' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png,csv|max:6048',
-                'caseId' => 'required|integer', // Add validation for caseId if needed
+                'caseId' => 'required', // Add validation for caseId if needed
             ]);
 
             if ($validator->fails()) {
@@ -201,6 +209,41 @@ class CustomerController extends Controller
                 'success' => 200,
                 'message' => 'File uploaded successfully.',
             ], 200);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred: ' . $ex->getMessage(),
+            ], 500);
+        }
+    }
+
+    function webcam_capture(Request $request) {
+        try {
+            $validator = Validator::make($request->all(), [
+                'image' => 'required',
+                'cust_id' => 'required', // Add validation for caseId if needed
+            ]);
+
+            echo $validator->errors();
+
+            /* if ($validator->fails()) {
+                return response()->json([
+                    'success' => 400,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors(),
+                ], 400);
+            } */
+
+            // $path = $request->file('image')->store('profile_photo/', 's3');
+
+            $Customer = Customer::where('id', $request->cust_id)->update(['photo' => $request->image]);
+
+            // echo 'Profile Photo uploaded successfully.';
+
+            // return redirect()->route('/customers/editCustomer/{customerId}', ['customerId' => $request->cust_id]);
+            return redirect('/customers/editCustomer/'.$request->cust_id);
+
+
         } catch (\Exception $ex) {
             return response()->json([
                 'success' => false,

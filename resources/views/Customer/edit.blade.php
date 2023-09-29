@@ -66,8 +66,6 @@
                                                                     value="{{$customer->name}}" required>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-6">
                                                         <div class="row form-group">
                                                             <label class="col-sm-3 col-form-label">Case ID</label>
                                                             <div class="col-sm-9">
@@ -76,11 +74,6 @@
                                                                     value="{{$customer->caseId}}">
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group row">
-                                                    <div class="col-sm-6">
                                                         <div class="row form-group">
                                                             <label class="col-sm-3 col-form-label">Mobile No</label>
                                                             <div class="col-sm-9">
@@ -89,8 +82,6 @@
                                                                     value="{{$customer->mobile}}">
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-6">
                                                         <div class="row form-group">
                                                             <label class="col-sm-3 col-form-label">Email</label>
                                                             <div class="col-sm-9">
@@ -99,11 +90,6 @@
                                                                     value="{{$customer->email}}">
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group row">
-                                                    <div class="col-sm-6">
                                                         <div class="row form-group">
                                                             <label class="col-sm-3 col-form-label">Gender</label>
                                                             <div class="col-sm-9">
@@ -115,8 +101,6 @@
                                                                 
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-6">
                                                         <div class="row form-group">
                                                             <label class="col-sm-3 col-form-label">Age</label>
                                                             <div class="col-sm-9">
@@ -125,11 +109,6 @@
                                                                     value="{{$customer->age}}">
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group row">
-                                                    <div class="col-sm-6">
                                                         <div class="row form-group">
                                                             <label class="col-sm-3 col-form-label">Occupation</label>
                                                             <div class="col-sm-9">
@@ -141,11 +120,53 @@
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="row form-group">
+                                                            @if(!empty($customer->photo))
+                                                            <img src="{{$customer->photo}}" alt="profile_photo">
+                                                            @endif
+                                                        </div>
+                                                        <div class="row form-group">
+                                                            <h6>Profile Photo : </h6>
+                                                            <a  a href='/photo/{{ $customer->id }}' class='btn btn-sm waves-effect waves-light btn-warning'>Capture</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- <div class="form-group row">
+                                                    <div class="col-sm-6">
+                                                        
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row">
+                                                    <div class="col-sm-6">
+                                                        
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        
+                                                    </div>
+                                                </div> -->
+
+                                                <div class="form-group row">
+                                                    <div class="col-sm-6">
+                                                        <div class="row form-group">
                                                             <label class="col-sm-3 col-form-label">Reffered By</label>
                                                             <div class="col-sm-9">
                                                                 <input type="text" name="refferedBy" id="refferedBy"
                                                                     class="form-control {{ $errors->has('refferedBy') ? ' is-invalid' : '' }}"
                                                                     value="{{$customer->refferedBy}}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="row form-group">
+                                                        <label class="col-sm-3 col-form-label">Registered On</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text"
+                                                                    class="form-control"
+                                                                    value="{{date('d-m-Y H:i:s', strtotime($customer->created_at))}}" readonly>
                                                             </div>
                                                         </div>
                                                     </div>
