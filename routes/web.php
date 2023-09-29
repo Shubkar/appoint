@@ -43,6 +43,13 @@ Route::get('/loadCustomers/{userId}', 'CustomerController@loadCustomerData');
 Route::get('/customers/importCsv','CustomerController@importCSV')->name('importCSV');
 Route::post('/customers/postCSV','CustomerController@postCSV');
 Route::post('/updateCustomer','CustomerController@updateCustomer');
+Route::get('/directory/{caseId}','CustomerController@directory');
+Route::post('/uploadpatientfile','CustomerController@uploadpatientfile');
+Route::post('/fetch_all_files','CustomerController@fetch_all_files');
+Route::post('/deletpateintFile','CustomerController@deletpateintFile');
+Route::get('/archive','CustomerController@archive');
+Route::get('/fetch_all_archive_files','CustomerController@fetch_all_archive_files');
+Route::post('/restorepateintFile','CustomerController@restorepateintFile');
 
 Route::get('/appointments/manageAppointment','AppointmentController@index');
 Route::get('/letters/myAppointments','AppointmentController@getMyAppointments');

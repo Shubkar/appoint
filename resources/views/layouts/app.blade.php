@@ -64,8 +64,8 @@ header("Pragma: no-cache");
 </head>
 <body onload="Quick_Load()">
 
-<div class="loader-bg">
-    <div class="loader-bar"></div>
+<div class="loader-bg1">
+    <div class="loader-bar1"></div>
 </div>
 <div id="pcoded" class="pcoded">
     <div class="pcoded-overlay-box"></div>
