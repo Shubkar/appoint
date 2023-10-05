@@ -9,11 +9,14 @@ use App\MyEvent;
 use App\User;
 use Carbon\Carbon;
 use Exception;
+use Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use kcfinder\session;
 use Yajra\DataTables\Facades\DataTables;
+use Aws\S3\S3Client;
+use Validator;
 
 class CustomerController extends Controller
 {
@@ -62,8 +65,14 @@ class CustomerController extends Controller
                         class='btn waves-effect waves-light btn-success' title='Activate'><i class=\"feather
                             icon-check-square\"></i></a>";
                 }
+                if(!empty($customer->caseId)) {
+                    $action=$action." | "."<a href='/directory/".$customer->caseId."'
+                        class='btn waves-effect waves-light btn-success' title='Directory'><i class=\"feather icon-folder\"></i></a>";
+                }
 
-
+                $action=$action." | "."<a href='/photo/".$customer->id."'
+                        class='btn waves-effect waves-light btn-warning' title='Capture profil photo'><i class=\"feather icon-camera\"></i></a>";
+                
             return $action;
         })
             ->editColumn('bookingUrl', function ($customer)
@@ -91,7 +100,193 @@ class CustomerController extends Controller
 
     }
 
+    function photo($custId) {
+        $Customer = Customer::where('id', $custId)->select('name')->first();
+        return view('Customer.photo',compact('custId','Customer'));
+    }
 
+    function directory($caseId) {
+        $directoryName = $caseId.'/';
+        /* $s3 = Storage::disk('s3');
+
+        if (!$s3->doesDirectoryExist(config('filesystems.disks.s3.bucket'), $folderPath)) {
+            // Create the folder if it doesn't exist
+            $s3->putObject([
+                'Bucket' => config('filesystems.disks.s3.bucket'),
+                'Key' => $folderPath,
+                'Body' => '',
+                'ACL' => 'public-read', // You can adjust the ACL as needed
+            ]);
+        } */
+
+        $s3 = new S3Client([
+            'version' => 'latest',
+            'region' => 'ap-southeast-2', // Replace with your desired AWS region
+            'credentials' => [
+                'key'    => "AKIAY5NQJZSAPNJ5UEU3",
+                'secret' => "FH9MuJ73/WaUIalnJLkSAOW+X/4SyLpOjPELLjO+",
+            ],
+        ]);
+
+        $directoryExists = $s3->doesObjectExist("homeodocs", $directoryName);
+
+        if (!$directoryExists) {
+            // Create the directory by uploading an empty object with a trailing slash
+            $s3->putObject([
+                'Bucket' => "homeodocs",
+                'Key' => $directoryName,
+                'Body' => '',
+            ]);
+        }
+        
+        $Customer = Customer::where('caseId', $caseId)->select('name')->first();
+
+        return view('Customer.directory',compact('caseId','Customer'));
+    }
+
+    function archive() {
+        return view('Customer.archive');
+    }
+
+    function fetch_all_archive_files() {
+        try {
+            $files = DB::table('patient_files')->join('customers', 'patient_files.caseId', '=', 'customers.caseId')->whereNotNull('deleted_at')->select('patient_files.*','customers.name', 'customers.caseId')->get();
+
+            foreach($files as $row) {
+                $row->filepath = Storage::disk('s3')->temporaryUrl($row->caseId."/".$row->file, now()->addMinutes(30)); // Adjust the expiration time as needed
+            }
+            return response()->json([
+                'success' => 200,
+                'data' => $files,
+                'message' => 'File uploaded successfully.',
+            ], 200);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred: ' . $ex->getMessage(),
+            ], 500);
+        }
+    }
+
+    function restorepateintFile(Request $request) {
+        try { 
+            DB::table('patient_files')->where('id', $request->id)->update(['deleted_at' => null]);
+            return response()->json([
+                'success' => 200,
+                'data' => "",
+                'message' => 'File Restored successfully.',
+            ], 200);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred: ' . $ex->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function uploadpatientfile(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required',
+                'upload_patient_file' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png,csv|max:6048',
+                'caseId' => 'required', // Add validation for caseId if needed
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => 400,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            $path = $request->file('upload_patient_file')->store($request->caseId.'/', 's3');
+
+            DB::table('patient_files')->insert(['caseId' => $request->caseId, 'title' => $request->title, 'file' => basename($path)]);
+
+            return response()->json([
+                'success' => 200,
+                'message' => 'File uploaded successfully.',
+            ], 200);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred: ' . $ex->getMessage(),
+            ], 500);
+        }
+    }
+
+    function webcam_capture(Request $request) {
+        try {
+            $validator = Validator::make($request->all(), [
+                'image' => 'required',
+                'cust_id' => 'required', // Add validation for caseId if needed
+            ]);
+
+            echo $validator->errors();
+
+            /* if ($validator->fails()) {
+                return response()->json([
+                    'success' => 400,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors(),
+                ], 400);
+            } */
+
+            // $path = $request->file('image')->store('profile_photo/', 's3');
+
+            $Customer = Customer::where('id', $request->cust_id)->update(['photo' => $request->image]);
+
+            // echo 'Profile Photo uploaded successfully.';
+
+            // return redirect()->route('/customers/editCustomer/{customerId}', ['customerId' => $request->cust_id]);
+            return redirect('/customers/editCustomer/'.$request->cust_id);
+
+
+        } catch (\Exception $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred: ' . $ex->getMessage(),
+            ], 500);
+        }
+    }
+
+    function fetch_all_files(Request $request) {
+        try {
+            $files = DB::table('patient_files')->where('caseId', $request->caseId)->whereNULL('deleted_at')->get();
+
+            foreach($files as $row) {
+                $row->filepath = Storage::disk('s3')->temporaryUrl($request->caseId."/".$row->file, now()->addMinutes(30)); // Adjust the expiration time as needed
+            }
+            return response()->json([
+                'success' => 200,
+                'data' => $files,
+                'message' => 'File uploaded successfully.',
+            ], 200);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred: ' . $ex->getMessage(),
+            ], 500);
+        }
+    }
+
+    function deletpateintFile(Request $request) {
+        try { 
+            DB::table('patient_files')->where('id', $request->id)->update(['deleted_at' => Carbon::now()]);
+            return response()->json([
+                'success' => 200,
+                'data' => "",
+                'message' => 'File Deleted successfully.',
+            ], 200);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred: ' . $ex->getMessage(),
+            ], 500);
+        }
+    }
 
     public function editCustomer($customerId)
     {

@@ -64,8 +64,8 @@ header("Pragma: no-cache");
 </head>
 <body onload="Quick_Load()">
 
-<div class="loader-bg">
-    <div class="loader-bar"></div>
+<div class="loader-bg1">
+    <div class="loader-bar1"></div>
 </div>
 <div id="pcoded" class="pcoded">
     <div class="pcoded-overlay-box"></div>
@@ -342,6 +342,11 @@ header("Pragma: no-cache");
                                         <li class="{{ (request()->segment(1) == 'templates') ? 'active' : '' }}">
                                             <a href="/templates/MyTemplates" class="waves-effect waves-dark">
                                                 <span class="pcoded-mtext">Settings</span>
+                                            </a>
+                                        </li>
+                                        <li class="{{ (request()->segment(1) == 'archive') ? 'active' : '' }}">
+                                            <a href="/archive" class="waves-effect waves-dark">
+                                                <span class="pcoded-mtext">Archive</span>
                                             </a>
                                         </li>
                                     </ul>
