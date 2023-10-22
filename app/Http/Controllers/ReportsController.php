@@ -83,7 +83,7 @@ class ReportsController extends Controller
         }
     }
 
-    public function generateSummarysheet($dtFrom, $dtTo,$userId, $courier = null, $paid =null,$customerId=0,$followup=-1,$isonline=-1,$forFeeReport=0,Request $request)
+    public function generateSummarysheet($dtFrom, $dtTo,$userId, $courier = null, $paid =null,$customerId=0,$followup=-1,$isonline=-1,$forFeeReport=0)
     {
         $template = MsgTemplates::find(1)->actual_msg;
         /* Session::put('DtFrom', Carbon::createFromFormat('Y-m-d', $dtFrom)->format('d-m-Y'));
