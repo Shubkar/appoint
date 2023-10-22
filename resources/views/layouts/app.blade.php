@@ -267,6 +267,25 @@ header("Pragma: no-cache");
         </div>
     </div>
 
+    <div class="form-group row msgbtn" style="display:none;">
+        <div class="col-sm-12">
+            <textarea name="whatsappmsg" id="whatsappmsg" class="form-control">WhatsApp Message here</textarea>
+            <br>
+            <a href="#" id="whatsappbtn" class="btn btn-sm btn-success" target="_blank">Send</a>
+        </div>
+    </div>
+
+    <div class="form-group row msgbtn" style="display:none;">
+        <div class="col-sm-12">
+            <hr>
+            <textarea name="zoommsg" id="zoommsg" class="form-control">Zoom Message here</textarea>
+            <br>
+            <a href="#" id="zoommsgbtn" class="btn btn-sm btn-success" target="_blank">Send</a>
+        </div>
+    </div>
+
+
+
 {{-- </form> --}}
 
 
@@ -536,7 +555,7 @@ header("Pragma: no-cache");
                 for(var i=0; i<len; i++){
 
                     var id = response[i].id;
-                    var name = response[i].name+"#"+response[i].caseId+"#"+response[i].mobile;
+                    var name = response[i].caseId+"~"+response[i].name+"~"+response[i].mobile;
 
                     var option = "<option value='"+id+"'>"+name+"</option>";
 
@@ -546,6 +565,43 @@ header("Pragma: no-cache");
 
             }
             });
+        }
+    }
+
+    $("#Quick_lblOnline").click(function(){
+        if($("#Quick_lblOnline").is(':checked')) {
+            $('.msgbtn').show();
+            messageforonlineconsultation();
+        } 
+    });
+
+    $("#whatsappmsg").keyup(function(){
+        messageforonlineconsultation();
+    });
+
+    $("#zoommsg").keyup(function(){
+        messageforonlineconsultation();
+    });
+
+    function messageforonlineconsultation() {
+        if($("#chkQuickNewPatient").is(':checked')) {
+            let mobile = $("#Quick_enter_patientMobile").val();
+            if(mobile.length > 0) {
+                let whatsapp = $("#whatsappmsg").val();
+                let zoom = $("#zoommsg").val();
+                
+                $("#whatsappbtn").attr("href", "https://api.whatsapp.com/send?phone="+mobile+"&text="+whatsapp);
+                $("#zoommsgbtn").attr("href", "https://api.whatsapp.com/send?phone="+mobile+"&text="+zoom);
+            }
+        } else {
+            let data = $("#Quick_select_patient option:selected").text();
+            const custdata = data.split("~");
+
+            let whatsapp = $("#whatsappmsg").val();
+            let zoom = $("#zoommsg").val();
+                
+            $("#whatsappbtn").attr("href", "https://api.whatsapp.com/send?phone="+custdata[2]+"&text="+whatsapp);
+            $("#zoommsgbtn").attr("href", "https://api.whatsapp.com/send?phone="+custdata[2]+"&text="+zoom);
         }
     }
 
