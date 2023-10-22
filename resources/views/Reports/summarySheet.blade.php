@@ -435,17 +435,17 @@
         $("#dateTo").val($("#dateFrom").val());
     });
 
-    $("#dateTo").change(function(){
+    /* $("#dateTo").change(function(){
         $("#dateFrom").val($("#dateTo").val());
-    });
+    }); */
 
     $("#dateFrom").keyup(function(){
         $("#dateTo").val($("#dateFrom").val());
     });
 
-    $("#dateTo").keyup(function(){
+    /* $("#dateTo").keyup(function(){
         $("#dateFrom").val($("#dateTo").val());
-    });
+    }); */
 
 
         function loadCustomers(bool) {
