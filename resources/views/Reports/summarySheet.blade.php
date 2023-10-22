@@ -431,6 +431,23 @@
 
     <script>
 
+    $("#dateFrom").change(function(){
+        $("#dateTo").val($("#dateFrom").val());
+    });
+
+    $("#dateTo").change(function(){
+        $("#dateFrom").val($("#dateTo").val());
+    });
+
+    $("#dateFrom").keyup(function(){
+        $("#dateTo").val($("#dateFrom").val());
+    });
+
+    $("#dateTo").keyup(function(){
+        $("#dateFrom").val($("#dateTo").val());
+    });
+
+
         function loadCustomers(bool) {
 
              if($('#userId').val()!="0" || $('#userId').val()!="")

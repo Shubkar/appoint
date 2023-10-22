@@ -110,10 +110,10 @@ class ReportsController extends Controller
         $query = MyEvent::select(DB::raw("`id`,`customerName`,`caseId`,`mobileNumber`,`dtStart`,dtStart as
         aTime,`feeAmount`,`balancePayment`,`paymentMode`,`remarks`,`invoiceNumber`, '' as
         action,`chiefComplaint`,`symptoms`,`dignosis`,`medicine`,`courier`,`awbNumber`,`isOnline`,'" . $template . "' as
-        template,`courierSent`,`folloupBooked`"))
-
-            ->whereDate('dtStart', '>=', (string)$dtFrom)
-            ->whereDate('dtStart', '<=', (string)$dtTo);
+        template,`courierSent`,`folloupBooked`"));
+         $query=$query->whereDate('dtStart', '>=', (string)date("Y-m-d", strtotime($dtFrom)))
+            ->whereDate('dtStart', '<=', (string)date("Y-m-d", strtotime($dtTo)));
+           
             if($userId>0)
             {
                 $query=$query->where('userId',$userId);
@@ -189,7 +189,13 @@ class ReportsController extends Controller
         }
 
         if ($results->isEmpty()) {
-            return response()->json([]);
+            $null_res = [
+                "draw"=> 1,
+                "recordsTotal"=> 0,
+                "recordsFiltered"=> 0,
+                "data"=> [],
+            ];
+            return response()->json($null_res);
         }
         
 
