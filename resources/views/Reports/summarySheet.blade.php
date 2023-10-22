@@ -228,6 +228,9 @@
                                                     aria-label="Position: activate to sort column ascending">Mobile
                                                 </th>
                                                 <th class="sorting" tabindex="0" aria-controls="footer-search"
+                                                    aria-label="Position: activate to sort column ascending">Whatsapp
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="footer-search"
                                                     aria-label="Office: activate to sort column ascending">
                                                     Date
                                                 </th>
@@ -240,7 +243,7 @@
                                                 </th>
                                                 <th class="sorting" tabindex="0" aria-controls="footer-search"
                                                     aria-label="Salary: activate to sort column ascending">
-                                                    Payment
+                                                    Payment Mode
                                                 </th>
                                                 <th class="sorting" tabindex="0" aria-controls="footer-search"
                                                     aria-label="Salary: activate to sort column ascending">
@@ -357,23 +360,27 @@
 
                                             <div class="col-sm-6">
                                                 <h6 id="totalAmount"></h6>
-                                                <div class="table-responsive">
-                                                    <table class="table table-striped table-bordered" id="payment_mode_total">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Payment Mode</th>
-                                                                <th>Total</th>
-                                                            </tr>
-                                                        </thead>
-                                                    </table>
-                                                </div>
                                             </div>
                                             {{-- <div class="col-sm-3" id="closingBalance"></div> --}}
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped thead-dark table-bordered" id="payment_mode_total">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Payment Mode</th>
+                                                            <th>Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
 
 
                     </div>
@@ -424,7 +431,7 @@
 
     <script>
 
-        function loadCustomers() {
+        function loadCustomers(bool) {
 
              if($('#userId').val()!="0" || $('#userId').val()!="")
              {
@@ -447,18 +454,18 @@
                for(var i=0; i<len; i++){
 
                  var id = response[i].id;
-                 var name = response[i].name+"#"+response[i].caseId+"#"+response[i].mobile;
+                 var name = response[i].caseId+"~"+response[i].name+"~"+response[i].mobile;
 
                  var option = "<option value='"+id+"'>"+name+"</option>";
 
                  $("#select_patient").append(option);
                }
-               @if(session()->has('PatientId'))
+               /* @if(session()->has('PatientId'))
                 $('#select_patient').val('{{session()->get("PatientId")}}');
                 $('#select_patient').trigger('change');
-                @endif
+                @endif */
              }
-             validateForm(false);
+             validateForm(bool);
 
            }
         });
@@ -471,19 +478,21 @@
             {
                 $("#dateFrom").val('{{Carbon\Carbon::now()->format("d-m-Y")}}');
                 $("#dateTo").val('{{Carbon\Carbon::now()->format("d-m-Y")}}');
+                validateForm(true);
             }
             else if(dateOffset==1)
             {
                 $("#dateFrom").val('{{Carbon\Carbon::now()->addDays(1)->format("d-m-Y")}}');
                 $("#dateTo").val('{{Carbon\Carbon::now()->addDays(1)->format("d-m-Y")}}');
+                validateForm(true);
             }
             else
             {
-                $("#dateFrom").val('');
-                $("#dateTo").val('{{Carbon\Carbon::now()->addDays(1)->format("d-m-Y")}}');
-            }
+                $("#dateFrom").val('{{Carbon\Carbon::now()->format("d-m-Y")}}');
+                $("#dateTo").val('{{Carbon\Carbon::now()->format("d-m-Y")}}');
+                loadCustomers(true);
 
-            validateForm(true);
+            }
         }
         var table;
         $(document).ready(function () {
@@ -502,8 +511,10 @@
            // var currentDate = fullDate.getDate() + "-" + twoDigitMonth + "-" + fullDate.getFullYear();
             //console.log(currentDate);
 
-            $('#dateFrom').val('{{session()->get("DtFrom")}}');
-            $('#dateTo').val('{{session()->get("DtTO")}}');
+            // $('#dateFrom').val('{{session()->get("DtFrom")}}');
+            // $('#dateTo').val('{{session()->get("DtTO")}}');
+            $("#dateFrom").val('{{Carbon\Carbon::now()->format("d-m-Y")}}');
+            $("#dateTo").val('{{Carbon\Carbon::now()->format("d-m-Y")}}');
 
             $("#dateFrom").datepicker({
     format: "dd-mm-yyyy",
@@ -517,7 +528,7 @@
     autoclose: true,
     todayHighlight: true
 });
-            loadCustomers();
+            loadCustomers(false);
             uploadForm();
 
         });
@@ -575,6 +586,8 @@
             dtEnd=dtEnd.getFullYear()+"-"+ (dtEnd.getMonth()+1) + "-" + dtEnd.getDate();
             $('#footer-search').dataTable().fnClearTable();
             $('#footer-search').dataTable().fnDestroy();
+            // $('#footer-search').dataTable().clear().draw();
+
             // Setup - add a text input to each footer cell
             /*$('#footer-search thead th.searching').each(function () {
                 var title = $(this).text();
@@ -582,7 +595,7 @@
             });*/
 
             if(firstLoad)
-            {
+            { 
                 firstLoad=false;
                 // DataTable
                 table = $('#footer-search').DataTable({
@@ -596,20 +609,21 @@
                         {"data": "caseId"},
                         {"data": "customerName"},
                         {"data": "mobileNumber"},
+                        {"data": "whatsapp"},
                         {"data": "dtStart"},
                         {data: 'aTime', name: 'dtStart'},
-                        {"data": "feeAmount","visible" : false,"searchable": false},
+                        {"data": "feeAmount"},
                         {"data": "paymentMode"},
-                        {"data": "balancePayment","visible" : false,"searchable": false},
+                        {"data": "balancePayment"},
                         {"data": "invoiceNumber","visible" : false,"searchable": false},
                         {"data": "remarks","visible" : false,"searchable": false},
-                        {"data": "chiefComplaint","visible" : false,"searchable": false},
+                        {"data": "chiefComplaint"},
                         {"data": "symptoms","visible" : false,"searchable": false},
                         {"data": "dignosis","visible" : false,"searchable": false},
                         {"data": "medicine","visible" : false,"searchable": false},
                         {"data": "courier","visible" : false,"searchable": false},
                         {"data": "awbNumber","visible" : false,"searchable": false},
-                        {"data": "isOnline","visible" : false,"searchable": false},
+                        {"data": "isOnline"},
                         {"data": "action","searchable": false},
                     ],
                     "pageLength": 50,
@@ -821,7 +835,7 @@
         function validateForm(frmButton) {
            // alert(frmButton);
 
-            var fromDate='{{session()->get("DtFrom")}}';
+            /* var fromDate='{{session()->get("DtFrom")}}';
             var toDate='{{session()->get("DtTO")}}';
             var patientId='{{session()->get("PatientId")}}';
             if(fromDate=="")
@@ -833,7 +847,11 @@
                 fromDate=$('#dateFrom').val();
                 toDate=$('#dateTo').val();
                 patientId=$( "#select_patient" ).val();
-            }
+            } */
+
+            var fromDate=$('#dateFrom').val();
+            var toDate=$('#dateTo').val();
+            var patientId=$( "#select_patient" ).val();
 
             job_start_date = fromDate.split('-');
             job_end_date = toDate.split('-');
@@ -847,7 +865,7 @@
                     {
                         var dtStart=new_start_date.getFullYear()+"-"+ (new_start_date.getMonth()+1) + "-" + new_start_date.getDate();
                         var dtEnd=new_end_date.getFullYear()+"-"+ (new_end_date.getMonth()+1) + "-" + new_end_date.getDate();
-               // loadData(new_start_date,new_end_date);
+            //    loadData(new_start_date,new_end_date);
                 table.ajax.url("/reports/generateSummarysheet/"+dtStart+"/"+dtEnd+"/"+$( "#userId" ).val()+"/-1/-1/"+patientId)
                 .load(
                     function () {
@@ -880,18 +898,21 @@
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                 }
             });
+            var patientId = $( "#select_patient" ).val();
+            var usaerId = $( "#userId" ).val();
             jQuery.ajax({
-                url: "/reports/getOpeningClosingBalance/"+dtStart+"/"+dtEnd,
+                url: "/reports/getOpeningClosingBalance/"+dtStart+"/"+dtEnd+"/"+usaerId+"/"+patientId,
                 method: 'get',
                 success: function (result) {
                     console.log(result);
                     $('#openingBalance').val(result.openingBalance);
+                    $('#payment_mode_total').empty();
                     var htmlResult='<strong>Total Fees: </strong>'+result.totalFees+'&nbsp;&nbsp;<strong>Total Received: </strong>'+(result.totalFees-result.balanceAmount)+'&nbsp;&nbsp;<strong>Closing Balance: </strong>'+result.closingBalance;
                     $('#totalAmount').html(htmlResult);
-                    console.log(result.paymethod_total);
-                    $('#payment_mode_total').empty();
+                    /* var htmlResult='<tr><td><strong>Total Fees: </strong></td><td>'+result.totalFees+'</td></tr><tr><td><strong>Total Received: </strong></td><td>'+result.totalFees-result.balanceAmount+'</td></tr><tr><td><strong>Closing Balance: </strong></td><td>'+result.closingBalance+'</td></tr>';
+                    $('#payment_mode_total').html(htmlResult); */
                     $.each( result.paymethod_total, function( key, val ) {
-                        let paymode_total_html = '<tr><td><strong>'+val.paymentMode+': </strong></td><td>'+val.totalFee+'</td></tr>';
+                        let paymode_total_html = '<tr><th><strong>'+val.paymentMode+': </strong></th><td>'+val.totalFee+'</td></tr>';
                         $('#payment_mode_total').append(paymode_total_html);
                     });
                    // $('#closingBalance').html('<h8>Closing Balance: </h8>'+result.closingBalance);

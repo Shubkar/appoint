@@ -126,6 +126,30 @@
     </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="upload_profilePicModal" tabindex="-1" role="dialog" aria-labelledby="upload_profilePicModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form class="UploadProfilePic" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="upload_profilePicModalLabel">Upload Profile Picture</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="cust_id">
+                        <input type="file" name="image" accept="image/*">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
 
 @endsection
@@ -321,6 +345,67 @@
             // Requery the server with the new one-time export settings
             dt.ajax.reload();
         }
+
+        $('#upload_profilePicModal').on('show.bs.modal', function(e) { 
+            var id = $(e.relatedTarget).data('id');
+            $(e.currentTarget).find('input[name="cust_id"]').val(id);
+        });
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            }
+        });
+
+        $('.UploadProfilePic').submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            $.ajax({
+                url: "{{url('UploadProfilePic')}}",
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    console.log(data);
+                    if(data.success == "200") {
+                        swal({
+                            title: "Success",
+                            text: data.message,
+                            type: "success",
+                            showCancelButton: false,
+                            confirmButtonClass: "btn-danger",
+                            confirmButtonText: "OK!",
+                            closeOnConfirm: true
+                        });
+                        $('#upload_profilePicModal').modal('toggle');
+                        $('.UploadProfilePic').trigger("reset"); //#states_form id which form  idneeds to be reset(reset form)
+                        // $('#footer-search').DataTable().ajax.reload();
+                    } else {  
+                        swal({
+                            title: "Error",
+                            text: data.message,
+                            type: "error",
+                            showCancelButton: false,
+                            confirmButtonClass: "btn-danger",
+                            confirmButtonText: "OK!",
+                            closeOnConfirm: true
+                        });
+                    }
+                },
+                error:function(data){
+                    swal({
+                        title: "Error",
+                        text: data.message,
+                        type: "error",
+                        showCancelButton: false,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: "OK!",
+                        closeOnConfirm: true
+                    });
+                }
+            });
+        });
     </script>
 
     <script type="text/javascript">

@@ -52,6 +52,8 @@ Route::get('/fetch_all_archive_files','CustomerController@fetch_all_archive_file
 Route::post('/restorepateintFile','CustomerController@restorepateintFile');
 Route::get('/photo/{caseId}','CustomerController@photo');
 Route::post('/webcam_capture','CustomerController@webcam_capture')->name('webcam_capture');
+Route::post('/UploadProfilePic','CustomerController@UploadProfilePic')->name('UploadProfilePic');
+Route::get('/PatientHistory/{caseId}','CustomerController@PatientHistory');
 
 Route::get('/appointments/manageAppointment','AppointmentController@index');
 Route::get('/letters/myAppointments','AppointmentController@getMyAppointments');
@@ -91,7 +93,7 @@ Route::post('/api/getTemplates','AndroidApiController@getTemplates');
 Route::get('/reports/SummarySheetclear','ReportsController@summarySheetClear');
 Route::get('/reports/SummarySheet','ReportsController@summarySheet');
 Route::get('/reports/generateSummarysheet/{dtFrom}/{dtTo}/{userId}/{courier?}/{paid?}/{customerId?}/{followup?}/{isonline?}/{forFeeReport?}','ReportsController@generateSummarysheet');
-Route::get('/reports/getOpeningClosingBalance/{dtFrom}/{dtTo}','ReportsController@getOpeningClosingBalance');
+Route::get('/reports/getOpeningClosingBalance/{dtFrom}/{dtTo}/{userId}/{patientId}','ReportsController@getOpeningClosingBalance');
 Route::post('/updateOpeningBalance','ReportsController@updateOpeningBalance');
 Route::get('/reports/sendInvoice/{appointmentId}','ReportsController@sendInvoice');
 Route::get('/reports/feeStatus/{dtFrom}/{dtTo}/{userId}/{courier?}/{paid?}/{customerId?}/{followup?}/{isonline?}','ReportsController@getFeeStatus');

@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('headerScripts')
+<meta name="_token" content="{{csrf_token()}}"/>
     <style>
         .select2-container--default .select2-selection--single .select2-selection__rendered {
             background-color: #FFFFFF !important;
@@ -121,12 +122,13 @@
                                                     <div class="col-sm-6">
                                                         <div class="row form-group">
                                                             @if(!empty($customer->photo))
-                                                            <img src="{{$customer->photo}}" alt="profile_photo">
+                                                            <img src="{{$customer->photo}}" alt="profile_photo" class="img-fluid" style="height: 450px;">
                                                             @endif
                                                         </div>
                                                         <div class="row form-group">
                                                             <h6>Profile Photo : </h6>
                                                             <a  a href='/photo/{{ $customer->id }}' class='btn btn-sm waves-effect waves-light btn-warning'>Capture</a>
+                                                            <a  a href='#' class='btn btn-sm waves-effect waves-light btn-info' data-id="{{ $customer->id }}" data-toggle='modal' data-target='#upload_profilePicModal'>Upload</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -297,6 +299,30 @@
         </div>
     </div>
 
+     <!-- Profile Photo Upload Modal -->
+     <div class="modal fade" id="upload_profilePicModal" tabindex="-1" role="dialog" aria-labelledby="upload_profilePicModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form class="UploadProfilePic" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="upload_profilePicModalLabel">Upload Profile Picture</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="cust_id">
+                        <input type="file" name="image" accept="image/*">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
 @endsection
 @section('scripts')
@@ -322,6 +348,69 @@
     autoclose: true,
     todayHighlight: true
 });
+        });
+
+
+        $('#upload_profilePicModal').on('show.bs.modal', function(e) { 
+            var id = $(e.relatedTarget).data('id');
+            $(e.currentTarget).find('input[name="cust_id"]').val(id);
+        });
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            }
+        });
+
+        $('.UploadProfilePic').submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            $.ajax({
+                url: "{{url('UploadProfilePic')}}",
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    console.log(data);
+                    if(data.success == "200") {
+                        swal({
+                            title: "Success",
+                            text: data.message,
+                            type: "success",
+                            showCancelButton: false,
+                            confirmButtonClass: "btn-danger",
+                            confirmButtonText: "OK!",
+                            closeOnConfirm: true
+                        });
+                        $('#upload_profilePicModal').modal('toggle');
+                        $('.UploadProfilePic').trigger("reset"); //#states_form id which form  idneeds to be reset(reset form)
+                        // $('#footer-search').DataTable().ajax.reload();
+                        location.reload(true)
+                    } else {  
+                        swal({
+                            title: "Error",
+                            text: data.message,
+                            type: "error",
+                            showCancelButton: false,
+                            confirmButtonClass: "btn-danger",
+                            confirmButtonText: "OK!",
+                            closeOnConfirm: true
+                        });
+                    }
+                },
+                error:function(data){
+                    swal({
+                        title: "Error",
+                        text: data.message,
+                        type: "error",
+                        showCancelButton: false,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: "OK!",
+                        closeOnConfirm: true
+                    });
+                }
+            });
         });
     </script>
 @endsection

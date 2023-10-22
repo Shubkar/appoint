@@ -445,13 +445,15 @@ class AppointmentController extends Controller
         }
         MyEvent::where('eventStatus', 'Not Attended')->where('dtStart', '<=', Carbon::now($user->uTimeZone)->startOfDay())->update(['eventStatus' =>'Attended']);
         if ($fromDate != '') {
-            Session::put('fromDate', $fromDate);
+            // Session::put('fromDate', $fromDate);
+            $request->session()->put('fromDate', $fromDate);
             $frmDt = Carbon::createFromFormat('d-m-Y h:i A', $fromDate . ' 12:00 AM', $user->uTimeZone);
         }
         //dd(Carbon::now($user->uTimeZone)->addMonths(3));
         //get max date from table and check if to date is greater than max date then we need to get records from google server
         if ($toDate != '') {
-            Session::put('toDate', $toDate);
+            // Session::put('toDate', $toDate);
+            $request->session()->put('toDate', $toDate);
             $toDt = Carbon::createFromFormat('d-m-Y h:i A', $toDate . ' 11:59 PM', $user->uTimeZone);
         }
 

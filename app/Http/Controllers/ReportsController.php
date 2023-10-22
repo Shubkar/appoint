@@ -68,27 +68,43 @@ class ReportsController extends Controller
                 $whatsappMsg=urlencode($whatsappMsg);
             }
 
-            return view('Reports.summarySheet', compact('errMSg',
-            'pharmacistNo','doctors','followupAppointment','whatsappMsg'));
+            /* Session::put('DtFrom',Carbon::now()->format("d-m-Y"));
+            Session::put('DtTO',Carbon::now()->format("d-m-Y"));
+            Session::put('PatientId',0); */
+
+            /* $request->session()->put('DtFrom', Carbon::now()->format("d-m-Y"));
+            $request->session()->put('DtTO', Carbon::now()->format("d-m-Y"));
+            $request->session()->put('PatientId', 0); */
+
+            return view('Reports.summarySheet', compact('errMSg','pharmacistNo','doctors','followupAppointment','whatsappMsg'));
         } else {
 
             return view('Reports.summarySheet', compact('pharmacistNo','doctors'));
         }
     }
 
-    public function generateSummarysheet($dtFrom, $dtTo,$userId, $courier = null, $paid =null,$customerId=0,$followup=-1,$isonline=-1,$forFeeReport=0)
+    public function generateSummarysheet($dtFrom, $dtTo,$userId, $courier = null, $paid =null,$customerId=0,$followup=-1,$isonline=-1,$forFeeReport=0,Request $request)
     {
         $template = MsgTemplates::find(1)->actual_msg;
-        Session::put('DtFrom', Carbon::createFromFormat('Y-m-d', $dtFrom)->format('d-m-Y'));
+        /* Session::put('DtFrom', Carbon::createFromFormat('Y-m-d', $dtFrom)->format('d-m-Y'));
         Session::put('DtTO', Carbon::createFromFormat('Y-m-d', $dtTo)->format('d-m-Y'));
         Session::put('PatientId', $customerId);
 
          Session::put('courier',$courier);
          Session::put('paid',$paid);
          Session::put('followup',$followup);
-         Session::put('isonline',$isonline);
+         Session::put('isonline',$isonline); */
 
+/*          $request->session()->put('DtFrom', Carbon::createFromFormat('Y-m-d', $dtFrom)->format('d-m-Y'));
+         $request->session()->put('DtTO', Carbon::createFromFormat('Y-m-d', $dtTo)->format('d-m-Y'));
+         $request->session()->put('PatientId', $customerId);
+         $request->session()->put('courier', $courier);
+         $request->session()->put('paid', $paid);
+         $request->session()->put('followup', $followup);
+         $request->session()->put('isonline', $isonline); */
 
+         $dtFrom = Carbon::createFromFormat('Y-m-d', $dtFrom);
+         $dtTo = Carbon::createFromFormat('Y-m-d', $dtTo);
 
         $defaultCountryCode = Auth::user()->default_Country_Code;
         $query = MyEvent::select(DB::raw("`id`,`customerName`,`caseId`,`mobileNumber`,`dtStart`,dtStart as
@@ -96,8 +112,8 @@ class ReportsController extends Controller
         action,`chiefComplaint`,`symptoms`,`dignosis`,`medicine`,`courier`,`awbNumber`,`isOnline`,'" . $template . "' as
         template,`courierSent`,`folloupBooked`"))
 
-            ->whereDate('dtStart', '>=', Carbon::createFromFormat('Y-m-d', $dtFrom))
-            ->whereDate('dtStart', '<=', Carbon::createFromFormat('Y-m-d', $dtTo));
+            ->whereDate('dtStart', '>=', (string)$dtFrom)
+            ->whereDate('dtStart', '<=', (string)$dtTo);
             if($userId>0)
             {
                 $query=$query->where('userId',$userId);
@@ -146,7 +162,38 @@ class ReportsController extends Controller
         {
             $query=$query->where('isOnline',$isonline);
         }
-        return DataTables::of($query)->editColumn('action', function ($customer) {
+        
+        $results = $query->get();
+        // $customer=Customer::find($customerId);
+        foreach($results as &$wht) {
+
+            $whatsappMsg = str_replace('#FIRST#', $wht->customerName, $wht->template);
+            $whatsappMsg = str_replace('#LAST#', '', $whatsappMsg);
+            $whatsappMsg = str_replace('#CASE#', $wht->caseId, $whatsappMsg);
+            $whatsappMsg = str_replace('#TIME#', Carbon::createFromFormat('Y-m-d H:i:s',$wht->dtStart)->format('l, d-m-Y h:i A'), $whatsappMsg);
+
+            if($wht->dtStart<Carbon::now()) {
+                $wht->whatsapp = "<a id='msg_".$wht->id."' onclick=sendWhatsappMsg('" .
+                    urlencode($whatsappMsg) . "','" . str_replace(' ','',$wht->mobileNumber) . "',1)
+                    class='btn waves-effect waves-light btn-success' title='Notification' style='color:#FFFFFF;'><i
+                        class=\"feather icon-message-circle\"></i></a>";
+             }
+            else
+            {
+                $wht->whatsapp =  "<a id='msg_".$wht->id."' onclick=sendWhatsappMsg('" .
+                    urlencode($whatsappMsg) . "','" . str_replace(' ','',$wht->mobileNumber) . "',0)
+                    class='btn waves-effect waves-light btn-success' title='Notification' style='color:#FFFFFF;'><i
+                        class=\"feather icon-message-circle\"></i></a>";
+            }
+
+        }
+
+        if ($results->isEmpty()) {
+            return response()->json([]);
+        }
+        
+
+        return DataTables::of($results)->editColumn('action', function ($customer) {
             $whatsappMsg = str_replace('#FIRST#', $customer->customerName, $customer->template);
             $whatsappMsg = str_replace('#LAST#', '', $whatsappMsg);
             $whatsappMsg = str_replace('#CASE#', $customer->caseId, $whatsappMsg);
@@ -182,18 +229,22 @@ class ReportsController extends Controller
                 $action = $action . " | " . "<a id='msg_".$customer->id."' onclick=sendWhatsappMsg('" .
                     urlencode($whatsappMsg) . "','" . str_replace(' ','',$customer->mobileNumber) . "',1)
                     class='btn waves-effect waves-light btn-success' title='Notification' style='color:#FFFFFF;'><i
-                        class=\"feather icon-bell\"></i></a>";
+                        class=\"feather icon-message-circle\"></i></a>";
              }
             else
             {
                 $action = $action . " | " . "<a id='msg_".$customer->id."' onclick=sendWhatsappMsg('" .
                     urlencode($whatsappMsg) . "','" . str_replace(' ','',$customer->mobileNumber) . "',0)
                     class='btn waves-effect waves-light btn-success' title='Notification' style='color:#FFFFFF;'><i
-                        class=\"feather icon-bell\"></i></a>";
+                        class=\"feather icon-message-circle\"></i></a>";
             }
             $action = $action . " | " . "<a href='/letters/generateLetters/" . $customer->id . "'
                 class='btn waves-effect waves-light btn-success' title='Letters'><i class=\"feather
                     icon-printer\"></i></a>";
+
+            $action = $action . " | " . "<a href='/PatientHistory/" . $customer->caseId . "'
+                class='btn waves-effect waves-light btn-secondary' title='Patient History' target='_blank'><i class=\"feather
+                    icon-user\"></i></a>";
 
             return $action;
         })
@@ -221,7 +272,7 @@ class ReportsController extends Controller
     }
 
 
-    public function getOpeningClosingBalance($dtFrom, $dtTo)
+    public function getOpeningClosingBalance($dtFrom, $dtTo, $userId, $patientId)
     {
         try {
             $allowEdit = false;
@@ -245,16 +296,65 @@ class ReportsController extends Controller
             }
 
             $totalFees = MyEvent::whereDate('dtStart', '>=', Carbon::createFromFormat('Y-m-d', $dtFrom))
-                ->whereDate('dtStart', '<=', Carbon::createFromFormat('Y-m-d', $dtTo))
-                ->sum('feeAmount');
+                ->whereDate('dtStart', '<=', Carbon::createFromFormat('Y-m-d', $dtTo));
+                
+
+            if($userId>0)
+            {
+                $totalFees=$totalFees->where('userId',$userId);
+            }
+
+            if($patientId>0)
+            {
+                $customer=Customer::find($patientId);
+                if($customer!=null)
+                {
+                    $totalFees = $totalFees->where('caseId',$customer->caseId)->where('mobileNumber',$customer->mobile);
+                }
+            }
+
+            $totalFees = $totalFees->sum('feeAmount');
 
             $balanceAmount = MyEvent::whereDate('dtStart', '>=', Carbon::createFromFormat('Y-m-d', $dtFrom))
-                ->whereDate('dtStart', '<=', Carbon::createFromFormat('Y-m-d', $dtTo)) ->sum('balancePayment');
+                ->whereDate('dtStart', '<=', Carbon::createFromFormat('Y-m-d', $dtTo));
+
+            if($userId>0)
+            {
+                $balanceAmount=$balanceAmount->where('userId',$userId);
+            }
+
+            if($patientId>0)
+            {
+                $customer=Customer::find($patientId);
+                if($customer!=null)
+                {
+                    $balanceAmount = $balanceAmount->where('caseId',$customer->caseId)->where('mobileNumber',$customer->mobile);
+                }
+            }
+
+            $balanceAmount = $balanceAmount->sum('balancePayment');
+
+
 
             $paymethod_total = MyEvent::select('paymentMode', DB::raw('SUM(feeAmount) as totalFee'))
                 ->where('dtStart', '>=', Carbon::createFromFormat('Y-m-d', $dtFrom))
-                ->where('dtStart', '<=', Carbon::createFromFormat('Y-m-d', $dtTo))
-                ->where('paymentMode', '!=', '')
+                ->where('dtStart', '<=', Carbon::createFromFormat('Y-m-d', $dtTo));
+                
+                if($userId>0)
+                {
+                    $paymethod_total=$paymethod_total->where('userId',$userId);
+                }
+    
+                if($patientId>0)
+                {
+                    $customer=Customer::find($patientId);
+                    if($customer!=null)
+                    {
+                        $paymethod_total = $paymethod_total->where('caseId',$customer->caseId)->where('mobileNumber',$customer->mobile);
+                    }
+                }
+
+                $paymethod_total = $paymethod_total->where('paymentMode', '!=', '')
                 ->groupBy('paymentMode')
                 ->get();
 

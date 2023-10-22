@@ -72,6 +72,11 @@ class CustomerController extends Controller
 
                 $action=$action." | "."<a href='/photo/".$customer->id."'
                         class='btn waves-effect waves-light btn-warning' title='Capture profil photo'><i class=\"feather icon-camera\"></i></a>";
+
+                $action=$action." | "."<a href='#' class='btn waves-effect waves-light btn-info' title='Upload Photo' data-id=".$customer->id." data-toggle='modal' data-target='#upload_profilePicModal'><i class=\"feather icon-camera\"></i></a>";
+
+                $action=$action." | "."<a href='/PatientHistory/".$customer->caseId."'
+                        class='btn waves-effect waves-light btn-secondary' title='Patient History' target='_blank'><i class=\"feather icon-user\"></i></a>";
                 
             return $action;
         })
@@ -121,19 +126,19 @@ class CustomerController extends Controller
 
         $s3 = new S3Client([
             'version' => 'latest',
-            'region' => 'ap-southeast-2', // Replace with your desired AWS region
+            'region' =>  env('AWS_DEFAULT_REGION'), // Replace with your desired AWS region
             'credentials' => [
-                'key'    => "AKIAY5NQJZSAPNJ5UEU3",
-                'secret' => "FH9MuJ73/WaUIalnJLkSAOW+X/4SyLpOjPELLjO+",
+                'key'    =>  env('AWS_ACCESS_KEY_ID'),
+                'secret' =>  env('AWS_SECRET_ACCESS_KEY'),
             ],
         ]);
 
-        $directoryExists = $s3->doesObjectExist("homeodocs", $directoryName);
+        $directoryExists = $s3->doesObjectExist(env('AWS_BUCKET'), $directoryName);
 
         if (!$directoryExists) {
             // Create the directory by uploading an empty object with a trailing slash
             $s3->putObject([
-                'Bucket' => "homeodocs",
+                'Bucket' => env('AWS_BUCKET'),
                 'Key' => $directoryName,
                 'Body' => '',
             ]);
@@ -146,6 +151,24 @@ class CustomerController extends Controller
 
     function archive() {
         return view('Customer.archive');
+    }
+
+    function PatientHistory($custId = 0) {
+        try { 
+            $Customer = Customer::where('caseId', $custId)->select('caseId','name','mobile','email','gender','age','address','ethnicity')->first();
+            $Bookings = MyEvent::select(DB::raw("`customerName`,`caseId`,`mobileNumber`,`dtStart`,dtStart as
+            aTime,`feeAmount`,`balancePayment`,`paymentMode`,`remarks`,`invoiceNumber`,`chiefComplaint`,`symptoms`,`dignosis`,`medicine`,`courier`,`awbNumber`,`isOnline`,`courierSent`,`folloupBooked`, `users`.`name` as `doctor`"))
+            ->join('users', 'users.id', '=', 'my_events.userId')
+            ->where('caseId', $custId)
+            ->orderBy('my_events.created_at','DESC')
+            ->get();
+            return view('Customer.history',compact('custId','Bookings','Customer'));
+        } catch (\Exception $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred: ' . $ex->getMessage(),
+            ], 500);
+        }
     }
 
     function fetch_all_archive_files() {
@@ -236,13 +259,41 @@ class CustomerController extends Controller
 
             // $path = $request->file('image')->store('profile_photo/', 's3');
 
-            $Customer = Customer::where('id', $request->cust_id)->update(['photo' => $request->image]);
+            $Customer = Customer::where('id', $request->cust_id)->update(['photo' => $request->image, 'cpatured_photo' => 1]);
 
             // echo 'Profile Photo uploaded successfully.';
 
             // return redirect()->route('/customers/editCustomer/{customerId}', ['customerId' => $request->cust_id]);
             return redirect('/customers/editCustomer/'.$request->cust_id);
 
+        } catch (\Exception $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred: ' . $ex->getMessage(),
+            ], 500);
+        }
+    }
+
+    function UploadProfilePic(Request $request) {
+        try{
+
+            if ($request->hasFile('image')) {
+                // $base64Image = base64_encode(file_get_contents($image));
+
+                $path = $request->file('image')->store('profile_photo/', 's3');
+
+                $Customer = Customer::where('id', $request->cust_id)->update(['photo' => basename($path), 'cpatured_photo' => 0]);
+                // Save the $base64Image in your database or perform other actions
+                return response()->json([
+                    'success' => "200",
+                    'message' => 'Profile Picture Uploaded',
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No file uploaded',
+                ], 400);
+            }
 
         } catch (\Exception $ex) {
             return response()->json([
@@ -304,6 +355,9 @@ class CustomerController extends Controller
             else
             {
                 $customer=Customer::where('id',$customerId)->first();
+                if($customer->cpatured_photo == 0 && !empty($customer->photo)) {
+                    $customer->photo = Storage::disk('s3')->temporaryUrl("profile_photo/".$customer->photo, now()->addMinutes(30));
+                }
             }
             if($customer->status=0)
             {

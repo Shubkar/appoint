@@ -61,6 +61,20 @@ header("Pragma: no-cache");
 
     <link rel="stylesheet" type="text/css" href="/files/assets/icon/glyph/css/bootstrap.min.css">
     @yield('headerScripts')
+    <style>
+        .thead-dark th {
+            color: #fff;
+            background-color: #000;
+            border-color: #fff;
+            font-weight: 800;
+            width:50%;
+        }
+        .thead-dark td {
+            background-color: #d3d3d3dd;
+            font-weight: 700;
+            border-color: #fff;
+        }
+    </style>
 </head>
 <body onload="Quick_Load()">
 
