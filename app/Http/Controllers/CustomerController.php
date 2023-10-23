@@ -76,7 +76,7 @@ class CustomerController extends Controller
                 $action=$action." | "."<a href='#' class='btn waves-effect waves-light btn-info' title='Upload Photo' data-id=".$customer->id." data-toggle='modal' data-target='#upload_profilePicModal'><i class=\"feather icon-camera\"></i></a>";
 
                 $action=$action." | "."<a href='/PatientHistory/".$customer->caseId."'
-                        class='btn waves-effect waves-light btn-secondary' title='Patient History' target='_blank'><i class=\"feather icon-user\"></i></a>";
+                        class='btn waves-effect waves-light btn-secondary' title='Patient History'><i class=\"feather icon-user\"></i></a>";
                 
             return $action;
         })

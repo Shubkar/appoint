@@ -45,6 +45,14 @@
         b, strong {
             font-weight:700;
         }
+
+        .thead-blu th {
+            color: #fff;
+            background-color: #2fbaff;
+            border-color: #fff;
+            font-weight: 800;
+            width:50%;
+        }
     </style>
 @endsection
 @section('contents')
@@ -206,6 +214,26 @@
 
 
                                         </div>
+                                        <div class="row" style="margin-top: 25px; margin-bottom: 25px;">
+                                            <div class="col-sm-6">
+                                                <div class="row">
+                                                    <label class="col-sm-3 col-form-label" style="text-align: right;">Opening Balance</label>
+                                                    <div class="col-sm-5"><input readonly type="number" name="openingBalance" id="openingBalance" class="form-control" placeholder="Opening Balance"></div>
+                                                    <div class="col-sm-3">
+                                                        <button type="button" id="btnSave" name="btnSave" disabled
+                                                                class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20" onclick="checkPassword()">
+                                                            Save
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <h6 id="totalAmount"></h6>
+                                            </div>
+
+                                        </div>
+
                                         <div class="row">
                                             <div class="card-header">
                                                 <h5>Summary</h5>
@@ -247,7 +275,7 @@
                                                 </th>
                                                 <th class="sorting" tabindex="0" aria-controls="footer-search"
                                                     aria-label="Salary: activate to sort column ascending">
-                                                    Balance
+                                                    Online
                                                 </th>
                                                 <th class="sorting" tabindex="0" aria-controls="footer-search"
                                                     aria-label="Salary: activate to sort column ascending">
@@ -284,7 +312,7 @@
                                                 </th>
                                                 <th class="sorting" tabindex="0" aria-controls="footer-search"
                                                     aria-label="Salary: activate to sort column ascending">
-                                                    Online
+                                                    Balance
                                                 </th>
                                                 <th class="sorting" tabindex="0" aria-controls="footer-search"
                                                     aria-label="Salary: activate to sort column ascending">
@@ -344,7 +372,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="row" style="margin-top: 25px; margin-bottom: 25px;">
+                                        <?php /*<div class="row" style="margin-top: 25px; margin-bottom: 25px;">
                                             <div class="col-sm-6">
                                                 <div class="row">
                                                     <label class="col-sm-3 col-form-label" style="text-align: right;">Opening Balance</label>
@@ -362,11 +390,11 @@
                                                 <h6 id="totalAmount"></h6>
                                             </div>
                                             {{-- <div class="col-sm-3" id="closingBalance"></div> --}}
-                                        </div>
+                                        </div> */ ?>
 
-                                        <div class="row">
+                                        <div class="row" style="margin-top: 45px; margin-bottom: 25px;">
                                             <div class="table-responsive">
-                                                <table class="table table-striped thead-dark table-bordered" id="payment_mode_total">
+                                                <table class="table table-striped thead-blu table-bordered" id="payment_mode_total">
                                                     <thead>
                                                         <tr>
                                                             <th>Payment Mode</th>
@@ -631,7 +659,8 @@
                         {data: 'aTime', name: 'dtStart'},
                         {"data": "feeAmount"},
                         {"data": "paymentMode"},
-                        {"data": "balancePayment"},
+                        {"data": "isOnline"},
+                        {"data": "balancePayment","visible" : false,"searchable": false},
                         {"data": "invoiceNumber","visible" : false,"searchable": false},
                         {"data": "remarks","visible" : false,"searchable": false},
                         {"data": "chiefComplaint"},
@@ -640,7 +669,6 @@
                         {"data": "medicine","visible" : false,"searchable": false},
                         {"data": "courier","visible" : false,"searchable": false},
                         {"data": "awbNumber","visible" : false,"searchable": false},
-                        {"data": "isOnline"},
                         {"data": "action","searchable": false},
                     ],
                     "pageLength": 50,
@@ -924,14 +952,21 @@
                     console.log(result);
                     $('#openingBalance').val(result.openingBalance);
                     $('#payment_mode_total').empty();
-                    var htmlResult='<strong>Total Fees: </strong>'+result.totalFees+'&nbsp;&nbsp;<strong>Total Received: </strong>'+(result.totalFees-result.balanceAmount)+'&nbsp;&nbsp;<strong>Closing Balance: </strong>'+result.closingBalance;
+                    // var htmlResult='<strong>Total Fees: </strong>'+result.totalFees+'&nbsp;&nbsp;<strong>Total Received: </strong>'+(result.totalFees-result.balanceAmount)+'&nbsp;&nbsp;<strong>Closing Balance: </strong>'+result.closingBalance;
+                    var htmlResult='<strong>Closing Balance: </strong>'+result.closingBalance;
                     $('#totalAmount').html(htmlResult);
                     /* var htmlResult='<tr><td><strong>Total Fees: </strong></td><td>'+result.totalFees+'</td></tr><tr><td><strong>Total Received: </strong></td><td>'+result.totalFees-result.balanceAmount+'</td></tr><tr><td><strong>Closing Balance: </strong></td><td>'+result.closingBalance+'</td></tr>';
                     $('#payment_mode_total').html(htmlResult); */
+                    let paymode_total_html_head = '<tr><th colspan="2" class="text-center">Total Amount by Payment Methods</th></tr>';
+                    $('#payment_mode_total').append(paymode_total_html_head);
+                    var fees_sum = 0;
                     $.each( result.paymethod_total, function( key, val ) {
                         let paymode_total_html = '<tr><th><strong>'+val.paymentMode+': </strong></th><td>'+val.totalFee+'</td></tr>';
+                        fees_sum += val.totalFee;
                         $('#payment_mode_total').append(paymode_total_html);
                     });
+                    let paymode_total_html = '<tr><th class="text-center"><strong>Total : </strong></th><td>'+fees_sum+'</td></tr>';
+                    $('#payment_mode_total').append(paymode_total_html);
                    // $('#closingBalance').html('<h8>Closing Balance: </h8>'+result.closingBalance);
                     if(result.allowEdit)
                     {

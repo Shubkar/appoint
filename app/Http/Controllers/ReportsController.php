@@ -249,7 +249,7 @@ class ReportsController extends Controller
                     icon-printer\"></i></a>";
 
             $action = $action . " | " . "<a href='/PatientHistory/" . $customer->caseId . "'
-                class='btn waves-effect waves-light btn-secondary' title='Patient History' target='_blank'><i class=\"feather
+                class='btn waves-effect waves-light btn-secondary' title='Patient History'><i class=\"feather
                     icon-user\"></i></a>";
 
             return $action;

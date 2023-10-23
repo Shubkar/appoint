@@ -275,17 +275,6 @@ header("Pragma: no-cache");
         </div>
     </div>
 
-    <div class="form-group row msgbtn" style="display:none;">
-        <div class="col-sm-12">
-            <hr>
-            <textarea name="zoommsg" id="zoommsg" class="form-control">Zoom Message here</textarea>
-            <br>
-            <a href="#" id="zoommsgbtn" class="btn btn-sm btn-success" target="_blank">Send</a>
-        </div>
-    </div>
-
-
-
 {{-- </form> --}}
 
 
@@ -579,29 +568,49 @@ header("Pragma: no-cache");
         messageforonlineconsultation();
     });
 
-    $("#zoommsg").keyup(function(){
-        messageforonlineconsultation();
-    });
-
     function messageforonlineconsultation() {
         if($("#chkQuickNewPatient").is(':checked')) {
             let mobile = $("#Quick_enter_patientMobile").val();
             if(mobile.length > 0) {
-                let whatsapp = $("#whatsappmsg").val();
-                let zoom = $("#zoommsg").val();
+
+            let message = 'Your Homeopathy WhatsApp/Zoom Online Consultation appointment has been Confirmed for #FIRST#  Case ID# #CASE# #TIME#*. Please be on time. For new/first consult please bring your existing reports if any. For *Follow up appointment bring your existing Homeopathy medicines even if empty. Kindly read our cancellation policy in the link below. https://drmanishal.com/cancellation-policy *Please confirm. ok?*.';
+
+            // Define values to replace the placeholders
+            let replacementValues = {
+                '#FIRST#': $('#Quick_enter_patient').val(),
+                '#CASE#': $('#Quick_enter_patientCase').val(),
+                '#TIME#': $('#Quick_timeFrom').val()
+            };
+
+            // Replace the placeholders with actual values
+            $.each(replacementValues, function (key, value) {
+                message = message.replace(key, value);
+            });
+            let whatsapp = $("#whatsappmsg").val(message);
                 
-                $("#whatsappbtn").attr("href", "https://api.whatsapp.com/send?phone="+mobile+"&text="+whatsapp);
-                $("#zoommsgbtn").attr("href", "https://api.whatsapp.com/send?phone="+mobile+"&text="+zoom);
+                $("#whatsappbtn").attr("href", "https://api.whatsapp.com/send?phone="+mobile+"&text="+message);
             }
         } else {
             let data = $("#Quick_select_patient option:selected").text();
             const custdata = data.split("~");
 
-            let whatsapp = $("#whatsappmsg").val();
-            let zoom = $("#zoommsg").val();
+            let message = 'Your Homeopathy WhatsApp/Zoom Online Consultation appointment has been Confirmed for #FIRST#  Case ID# #CASE# #TIME#*. Please be on time. For new/first consult please bring your existing reports if any. For *Follow up appointment bring your existing Homeopathy medicines even if empty. Kindly read our cancellation policy in the link below. https://drmanishal.com/cancellation-policy *Please confirm. ok?*.';
+
+            // Define values to replace the placeholders
+            let replacementValues = {
+                '#FIRST#': custdata[1],
+                '#CASE#': custdata[0],
+                '#TIME#': $('#Quick_timeFrom').val()
+            };
+
+            // Replace the placeholders with actual values
+            $.each(replacementValues, function (key, value) {
+                message = message.replace(key, value);
+            });
+
+            let whatsapp = $("#whatsappmsg").val(message);
                 
-            $("#whatsappbtn").attr("href", "https://api.whatsapp.com/send?phone="+custdata[2]+"&text="+whatsapp);
-            $("#zoommsgbtn").attr("href", "https://api.whatsapp.com/send?phone="+custdata[2]+"&text="+zoom);
+            $("#whatsappbtn").attr("href", "https://api.whatsapp.com/send?phone="+custdata[2]+"&text="+message);
         }
     }
 

@@ -70,9 +70,14 @@
                                                         <div class="row form-group">
                                                             <label class="col-sm-3 col-form-label">Case ID</label>
                                                             <div class="col-sm-9">
-                                                                <input type="text" name="caseId" id="caseId"
+                                                                <div class="d-flex justify-content-between">
+                                                                    <input type="text" name="caseId" id="caseId"
                                                                     class="form-control {{ $errors->has('caseId') ? ' is-invalid' : '' }}"
-                                                                    value="{{$customer->caseId}}">
+                                                                    value="{{$customer->caseId}}" readonly>
+                                                                    <a href='/PatientHistory/{{ $customer->caseId }}' class='btn waves-effect waves-light btn-primary' title='Patient History'><i class="feather icon-user"></i></a>
+                                                                </div>
+
+                                                                
                                                             </div>
                                                         </div>
                                                         <div class="row form-group">
