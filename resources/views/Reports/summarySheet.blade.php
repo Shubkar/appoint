@@ -53,6 +53,9 @@
             font-weight: 800;
             width:50%;
         }
+        a.dt-button {
+            font-size: 1.4em!important;
+        }
     </style>
 @endsection
 @section('contents')
@@ -111,8 +114,8 @@
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-4 col-form-label" style="text-align: right;">Doctor</label>
-                                                    <div class="col-sm-8">
+                                                    <label class="col-sm-2 col-form-label" style="text-align: right;">Doctor</label>
+                                                    <div class="col-sm-10">
 
                                                         <select class="form-control js-example-basic-single" id="userId" name="userId">
                                                             <option value="0">All</option>
@@ -126,8 +129,8 @@
 
                                             <div class="col-sm-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-4 col-form-label" style="text-align: right;">Patient</label>
-                                                    <div class="col-sm-8">
+                                                    <label class="col-sm-2 col-form-label" style="text-align: right;">Patient</label>
+                                                    <div class="col-sm-10">
 
                                                         <select class="form-control js-example-basic-single" id="select_patient" name="select_patient">
                                                     <option value="0">Select Patient</option>
@@ -137,23 +140,25 @@
                                             </div>
                                         </div>
 <div class="row">
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-4">
                                                 <div class="row">
                                                     <div class="col-sm-5">
-                                                <div class="form-group row">
-                                                    <label class="col-sm-4 col-form-label" style="text-align: right;">From</label>
-                                                    <div class="col-sm-8">
-                                                        <input type="text" name="dateFrom" id="dateFrom" class="form-control" required>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" style="text-align: right;">From</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" name="dateFrom" id="dateFrom" class="form-control" required>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
 
-                                            <div class="col-sm-5">
-                                                <div class="form-group row">
-                                                    <label class="col-sm-4 col-form-label" style="text-align: right;">To</label>
-                                                    <div class="col-sm-8">
-                                                        <input type="text" name="dateTo" id="dateTo"
-                                                               class="form-control" required>
+                                                    <div class="col-sm-5">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-4 col-form-label" style="text-align: right;">To</label>
+                                                            <div class="col-sm-8">
+                                                                <input type="text" name="dateTo" id="dateTo"
+                                                                    class="form-control" required>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -162,8 +167,6 @@
                                                         class="btn btn-warning btn-md btn-block waves-effect text-center m-b-20">
                                                     Reset
                                                 </button>
-                                            </div>
-                                                </div>
                                             </div>
                                             <div class="col-sm-2">
                                                 <button type="button" onclick="setTomorrowDate(0)"
@@ -212,25 +215,6 @@
                                             </div> --}}
 
 
-
-                                        </div>
-                                        <div class="row" style="margin-top: 25px; margin-bottom: 25px;">
-                                            <div class="col-sm-6">
-                                                <div class="row">
-                                                    <label class="col-sm-3 col-form-label" style="text-align: right;">Opening Balance</label>
-                                                    <div class="col-sm-5"><input readonly type="number" name="openingBalance" id="openingBalance" class="form-control" placeholder="Opening Balance"></div>
-                                                    <div class="col-sm-3">
-                                                        <button type="button" id="btnSave" name="btnSave" disabled
-                                                                class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20" onclick="checkPassword()">
-                                                            Save
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-sm-6">
-                                                <h6 id="totalAmount"></h6>
-                                            </div>
 
                                         </div>
 
@@ -322,6 +306,35 @@
                                             </thead>
 
                                         </table>
+
+                                        <div class="row" style="margin-top: 35px; margin-bottom: 25px;">
+                                            <div class="col-sm-4">
+                                                <div class="row">
+                                                    <label class="col-sm-3 col-form-label" style="text-align: right;">Total Amount</label>
+                                                    <div class="col-sm-5"><input readonly type="number" name="totalAmount" id="totalAmount" class="form-control" placeholder="Total Fees"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="row">
+                                                    <label class="col-sm-3 col-form-label" style="text-align: right;">Opening Balance</label>
+                                                    <div class="col-sm-5"><input readonly type="number" name="openingBalance" id="openingBalance" class="form-control" placeholder="Opening Balance"></div>
+                                                    <div class="col-sm-3">
+                                                        <button type="button" id="btnSave" name="btnSave" disabled
+                                                                class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20" onclick="checkPassword()">
+                                                            Save
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-4">
+                                                <div class="row">
+                                                    <label class="col-sm-3 col-form-label" style="text-align: right;">Closing Balance</label>
+                                                    <div class="col-sm-5"><input readonly type="number" name="closingBalance" id="closingBalance" class="form-control" placeholder="Closing Balance"></div>
+                                                </div>
+                                            </div>
+
+                                        </div>
 
                                         <div class="row">
                                             <div class="col-sm-12">
@@ -567,6 +580,20 @@
     autoclose: true,
     todayHighlight: true
 });
+
+        google_server();
+        function google_server() {
+            $('#calendarId').val($('#userId').val());
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });
+            $.post("/appointments/getFromServer", {calendarId: $('#calendarId').val()}, function(result){
+                console.log(result);
+            });
+        }
+
             $("#dateTo").datepicker({
     format: "dd-mm-yyyy",
     todayBtn: "linked",
@@ -721,7 +748,7 @@
                             "action": newexportaction,
                             "autoPrint": false,
                             "exportOptions": {
-                                columns: [ 0, 1, 2, 3 ,4,5,6,7,8,9,10,11,12,13,14,15],
+                                columns: [ 0, 1, 2, 4, 5, 6],
                                 stripHtml: false
                             },
                             "title": function () { return "Summary "+$('#dateFrom').val()+" - "+$('#dateTo').val(); },
@@ -953,8 +980,13 @@
                     $('#openingBalance').val(result.openingBalance);
                     $('#payment_mode_total').empty();
                     // var htmlResult='<strong>Total Fees: </strong>'+result.totalFees+'&nbsp;&nbsp;<strong>Total Received: </strong>'+(result.totalFees-result.balanceAmount)+'&nbsp;&nbsp;<strong>Closing Balance: </strong>'+result.closingBalance;
-                    var htmlResult='<strong>Closing Balance: </strong>'+result.closingBalance;
-                    $('#totalAmount').html(htmlResult);
+                    // var htmlResult='<strong>Closing Balance: </strong>'+result.closingBalance;
+                    // $('#totalAmount').html(htmlResult);
+                    $('#totalAmount').val(result.totalFees);
+                    $('#closingBalance').val(result.closingBalance);
+
+
+
                     /* var htmlResult='<tr><td><strong>Total Fees: </strong></td><td>'+result.totalFees+'</td></tr><tr><td><strong>Total Received: </strong></td><td>'+result.totalFees-result.balanceAmount+'</td></tr><tr><td><strong>Closing Balance: </strong></td><td>'+result.closingBalance+'</td></tr>';
                     $('#payment_mode_total').html(htmlResult); */
                     let paymode_total_html_head = '<tr><th colspan="2" class="text-center">Total Amount by Payment Methods</th></tr>';
@@ -1152,6 +1184,11 @@ function validate_server_fetch() {
                     return true;
                 }
         }
+
+        
+
+
+        
     </script>
 
 @endsection

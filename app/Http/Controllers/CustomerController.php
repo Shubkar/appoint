@@ -41,10 +41,10 @@ class CustomerController extends Controller
     public function getAllCustomers($userId,$status=1)
     {
         session(['selectedUserId' => $userId]);
-        $query=Customer::select(DB::raw("`id`, `userId`, `name`, `caseId`, `mobile`, DATE_FORMAT(`created_at`, '%d-%m-%Y %H:%i:%s') as `registered_date`, `email`,`status`, '' as action,'' as bookingUrl"))
+        $query=Customer::select(DB::raw("`id`, `userId`, `name`, `caseId`, `mobile`, `created_at`, `email`,`status`, '' as action,'' as bookingUrl"))
             ->where('status',$status)
             ->where('userId',$userId)
-            ->where('caseId','!=','NC');;
+            ->where('caseId','!=','NC');
 
         return DataTables::of($query)->editColumn('action', function ($customer)
         {

@@ -295,14 +295,14 @@ class ReportsController extends Controller
             /* $openingBalance= MyEvent::where('eventStatus','Active')
                 ->whereDate('dtStart','<',Carbon::createFromFormat('Y-m-d', $dtFrom))
                 ->sum('feeAmount');*/
-            $openObj = OpeningBalance::where('openDate', Carbon::createFromFormat('Y-m-d', $dtFrom)->format('Y-m-d'))->first();
+            $openObj = OpeningBalance::whereDate('openDate', (string)date("Y-m-d", strtotime($dtFrom)))->first();
             $openingBalance = 0;
             if ($openObj != null) {
                 $openingBalance = $openObj->openingBalance;
             }
 
-            $totalFees = MyEvent::whereDate('dtStart', '>=', Carbon::createFromFormat('Y-m-d', $dtFrom))
-                ->whereDate('dtStart', '<=', Carbon::createFromFormat('Y-m-d', $dtTo));
+            $totalFees = MyEvent::whereDate('dtStart', '>=', (string)date("Y-m-d", strtotime($dtFrom)))
+                ->whereDate('dtStart', '<=', (string)date("Y-m-d", strtotime($dtTo)));
                 
 
             if($userId>0)
@@ -321,8 +321,8 @@ class ReportsController extends Controller
 
             $totalFees = $totalFees->sum('feeAmount');
 
-            $balanceAmount = MyEvent::whereDate('dtStart', '>=', Carbon::createFromFormat('Y-m-d', $dtFrom))
-                ->whereDate('dtStart', '<=', Carbon::createFromFormat('Y-m-d', $dtTo));
+            $balanceAmount = MyEvent::whereDate('dtStart', '>=', (string)date("Y-m-d", strtotime($dtFrom)))
+                ->whereDate('dtStart', '<=', (string)date("Y-m-d", strtotime($dtTo)));
 
             if($userId>0)
             {
@@ -340,11 +340,9 @@ class ReportsController extends Controller
 
             $balanceAmount = $balanceAmount->sum('balancePayment');
 
-
-
             $paymethod_total = MyEvent::select('paymentMode', DB::raw('SUM(feeAmount) as totalFee'))
-                ->where('dtStart', '>=', Carbon::createFromFormat('Y-m-d', $dtFrom))
-                ->where('dtStart', '<=', Carbon::createFromFormat('Y-m-d', $dtTo));
+                ->whereDate('dtStart', '>=', (string)date("Y-m-d", strtotime($dtFrom)))
+                ->whereDate('dtStart', '<=', (string)date("Y-m-d", strtotime($dtTo)));
                 
                 if($userId>0)
                 {

@@ -206,7 +206,7 @@
                     {"data": "name"},
                     {"data": "email"},
                     {"data": "mobile"},
-                    {"data": "registered_date"},
+                    {"data": "created_at"},
                     {"data": "action","searchable": false},
                 ],
                 "deferRender": true,
