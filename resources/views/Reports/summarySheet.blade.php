@@ -54,7 +54,11 @@
             width:50%;
         }
         a.dt-button {
-            font-size: 1.4em!important;
+            font-size: 1.0em!important;
+        }
+        .vertical-line{
+            border-right: 1px solid #000;
+            padding-right: 28px;
         }
     </style>
 @endsection
@@ -112,7 +116,7 @@
                                     </div>
                                     <div class="card-block">
                                         <div class="row">
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-4 col-xs-12 col-md-6 col-lg-6 col-xl-6">
                                                 <div class="form-group row">
                                                     <label class="col-sm-2 col-form-label" style="text-align: right;">Doctor</label>
                                                     <div class="col-sm-10">
@@ -127,7 +131,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-4 col-xs-12 col-md-6 col-lg-6 col-xl-6">
                                                 <div class="form-group row">
                                                     <label class="col-sm-2 col-form-label" style="text-align: right;">Patient</label>
                                                     <div class="col-sm-10">
@@ -140,7 +144,7 @@
                                             </div>
                                         </div>
 <div class="row">
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-6">
                                                 <div class="row">
                                                     <div class="col-sm-5">
                                                         <div class="form-group row">
@@ -162,12 +166,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-2">
+                                            <!-- <div class="col-sm-2">
                                                  <button type="button" onclick="setTomorrowDate(-1)"
                                                         class="btn btn-warning btn-md btn-block waves-effect text-center m-b-20">
                                                     Reset
                                                 </button>
-                                            </div>
+                                            </div> -->
                                             <div class="col-sm-2">
                                                 <button type="button" onclick="setTomorrowDate(0)"
                                                         class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20">
@@ -263,16 +267,15 @@
                                                 </th>
                                                 <th class="sorting" tabindex="0" aria-controls="footer-search"
                                                     aria-label="Salary: activate to sort column ascending">
+                                                    Cheif Complaint
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="footer-search"
+                                                    aria-label="Salary: activate to sort column ascending">
                                                     Invoice #
                                                 </th>
                                                 <th class="sorting" tabindex="0" aria-controls="footer-search"
                                                     aria-label="Salary: activate to sort column ascending">
                                                     Remarks
-                                                </th>
-
-                                                <th class="sorting" tabindex="0" aria-controls="footer-search"
-                                                    aria-label="Salary: activate to sort column ascending">
-                                                    Cheif Complaint
                                                 </th>
                                                 <th class="sorting" tabindex="0" aria-controls="footer-search"
                                                     aria-label="Salary: activate to sort column ascending">
@@ -306,19 +309,18 @@
                                             </thead>
 
                                         </table>
+                                        <!-- <div class="d-flex justify-content-between">...</div> -->
+                                        <div class="row" style="margin-top: 45px; margin-bottom: 25px;">
 
-                                        <div class="row" style="margin-top: 35px; margin-bottom: 25px;">
-                                            <div class="col-sm-4">
-                                                <div class="row">
-                                                    <label class="col-sm-3 col-form-label" style="text-align: right;">Total Amount</label>
-                                                    <div class="col-sm-5"><input readonly type="number" name="totalAmount" id="totalAmount" class="form-control" placeholder="Total Fees"></div>
-                                                </div>
+                                            <div class="col-sm-12 col-xs-12 col-md-4 col-lg-4 col-xl-4 vertical-line">
+                                                <label class="col-form-label" style="text-align: right;">Total Amount</label>
+                                                <input readonly type="number" name="totalAmount" id="totalAmount" class="form-control" placeholder="Total Fees">
                                             </div>
-                                            <div class="col-sm-4">
+
+                                            <div class="col-sm-12 col-xs-12 col-md-4 col-lg-4 col-xl-4 vertical-line">
                                                 <div class="row">
-                                                    <label class="col-sm-3 col-form-label" style="text-align: right;">Opening Balance</label>
-                                                    <div class="col-sm-5"><input readonly type="number" name="openingBalance" id="openingBalance" class="form-control" placeholder="Opening Balance"></div>
-                                                    <div class="col-sm-3">
+                                                    <div class="col-sm-9"><label class="col-form-label" style="text-align: right;">Opening Balance</label><input readonly type="number" name="openingBalance" id="openingBalance" class="form-control" placeholder="Opening Balance"></div>
+                                                    <div class="col-sm-3" style="padding-top: 28px;">
                                                         <button type="button" id="btnSave" name="btnSave" disabled
                                                                 class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20" onclick="checkPassword()">
                                                             Save
@@ -327,11 +329,9 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-sm-4">
-                                                <div class="row">
-                                                    <label class="col-sm-3 col-form-label" style="text-align: right;">Closing Balance</label>
-                                                    <div class="col-sm-5"><input readonly type="number" name="closingBalance" id="closingBalance" class="form-control" placeholder="Closing Balance"></div>
-                                                </div>
+                                            <div class="col-sm-12 col-xs-12 col-md-4 col-lg-4 col-xl-4" style="padding-left: 28px;">
+                                                <label class="col-form-label" style="text-align: right;">Closing Balance</label>
+                                                <input readonly type="number" name="closingBalance" id="closingBalance" class="form-control" placeholder="Closing Balance">
                                             </div>
 
                                         </div>
@@ -512,7 +512,7 @@
                for(var i=0; i<len; i++){
 
                  var id = response[i].id;
-                 var name = response[i].caseId+"~"+response[i].name+"~"+response[i].mobile;
+                 var name = response[i].caseId+" | "+response[i].name+" | "+response[i].mobile;
 
                  var option = "<option value='"+id+"'>"+name+"</option>";
 
@@ -590,7 +590,7 @@
                 }
             });
             $.post("/appointments/getFromServer", {calendarId: $('#calendarId').val()}, function(result){
-                console.log(result);
+                // console.log(result);
             });
         }
 
@@ -687,10 +687,10 @@
                         {"data": "feeAmount"},
                         {"data": "paymentMode"},
                         {"data": "isOnline"},
+                        {"data": "chiefComplaint"},
                         {"data": "balancePayment","visible" : false,"searchable": false},
                         {"data": "invoiceNumber","visible" : false,"searchable": false},
                         {"data": "remarks","visible" : false,"searchable": false},
-                        {"data": "chiefComplaint"},
                         {"data": "symptoms","visible" : false,"searchable": false},
                         {"data": "dignosis","visible" : false,"searchable": false},
                         {"data": "medicine","visible" : false,"searchable": false},
@@ -993,11 +993,15 @@
                     $('#payment_mode_total').append(paymode_total_html_head);
                     var fees_sum = 0;
                     $.each( result.paymethod_total, function( key, val ) {
-                        let paymode_total_html = '<tr><th><strong>'+val.paymentMode+': </strong></th><td>'+val.totalFee+'</td></tr>';
+                        var htmlcss = '';
+                        if(val.paymentMode == "Blank/Others") {
+                            htmlcss = ' style="color:#db1e1e !important;"';
+                        }
+                        let paymode_total_html = '<tr class="text-center"><th><strong'+htmlcss+'>'+val.paymentMode+': </strong></th><td'+htmlcss+'>'+val.totalFee+'</td></tr>';
                         fees_sum += val.totalFee;
                         $('#payment_mode_total').append(paymode_total_html);
                     });
-                    let paymode_total_html = '<tr><th class="text-center"><strong>Total : </strong></th><td>'+fees_sum+'</td></tr>';
+                    let paymode_total_html = '<tr class="text-center"><th><strong>Total : </strong></th><td>'+fees_sum+'</td></tr>';
                     $('#payment_mode_total').append(paymode_total_html);
                    // $('#closingBalance').html('<h8>Closing Balance: </h8>'+result.closingBalance);
                     if(result.allowEdit)

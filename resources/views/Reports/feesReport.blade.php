@@ -165,7 +165,7 @@
 
                                             <div class="col-sm-3">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-4 col-form-label" style="text-align: right;">Type</label>
+                                                    <label class="col-sm-4 col-form-label" style="text-align: right;">Online</label>
                                                     <div class="col-sm-8">
                                                         <select name="txtAppoType" id="txtAppoType" class="form-control js-example-basic-single">
                                                             <option value="-1">All</option>

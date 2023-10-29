@@ -544,7 +544,7 @@ header("Pragma: no-cache");
                 for(var i=0; i<len; i++){
 
                     var id = response[i].id;
-                    var name = response[i].caseId+"~"+response[i].name+"~"+response[i].mobile;
+                    var name = response[i].caseId+" | "+response[i].name+" | "+response[i].mobile;
 
                     var option = "<option value='"+id+"'>"+name+"</option>";
 

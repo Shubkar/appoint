@@ -174,9 +174,14 @@ class MyEventsController extends Controller
                                 <th style='background-color:#eeeeee'>Amount</th>
                             </tr>
                             <tr>
-                                <td>1</td>
-                                <td>Consultation and remedy Charges for ". $appointment->chiefComplaint ."</td>
-                                <td>". $doc->currencyCode ." ". $appointment->feeAmount ."</td>
+                                <td>1</td>";
+                                if(!empty($appointment->chiefComplaint) && $appointment->chiefComplaint != ".") {
+                                    $receiptData->letterData .= "<td>Consultation and Homeopathy remedy Charges for ". $appointment->chiefComplaint ."</td>";
+                                } else {
+                                    $receiptData->letterData .= "<td>Consultation and Homeopathy remedy Charges. </td>";
+                                }
+                                    
+                                $receiptData->letterData .= "<td>". $doc->currencyCode ." ". $appointment->feeAmount ."</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -217,7 +222,7 @@ class MyEventsController extends Controller
                 <p style='text-align: right;'>Date:
                     ".  Carbon::createFromFormat('Y-m-d H:i:s', $appointment->dtStart)->format('d/m/Y') .
                 "</p>
-                <p style='text-align: center;'><strong><u>Sick Leave Letter</u></strong></p>
+                <p style='text-align: center;'><strong><u>Sick Leave/Attendance Letter</u></strong></p>
                 <p>
                     Client Name: ". $appointment->customerName ."<br /><br />
                     Case #: ". $appointment->caseId ."<br /><br />
@@ -225,7 +230,7 @@ class MyEventsController extends Controller
                     <strong>Whomsoever it may be concerned.</strong> <br /><br />
 
                     This is to certify that above named client consulted me for homeopathy - alternative treatment for
-                    his health condition, suffering from ". $appointment->chiefComplaint ." Symptom like
+                    his/her health condition, suffering from ". $appointment->chiefComplaint ." Symptom like
                     ". $appointment->symptoms ."<br /><br />
 
                     My recommendation is based on the factors indicated below:<br />
@@ -270,8 +275,8 @@ class MyEventsController extends Controller
                         <strong>Whomsoever it may be concerned.</strong> <br /><br />
 
                         This is to certify that above named client is under homeopathy treatment for his/her
-                        healthcondition, suffering from ". $appointment->chiefComplaint .". We have prescribed herthe
-                        following homoeopathic remedies which she is carrying with her during her travel.<br /><br />
+                        healthcondition, suffering from ". $appointment->chiefComplaint .". We have prescribed him/her the
+                        following homoeopathic remedies which he/she is carrying with his/her during her travel.<br /><br />
                         ". $appointment->medicine ."
                         <br /><br /><br />
 

@@ -255,12 +255,14 @@ class ReportsController extends Controller
             return $action;
         })
         ->editColumn('isOnline', function ($row) {
-        return $row->isOnline==1 ? 'Yes':'No';
+        return $row->isOnline==1 ? "<a 
+        class='btn waves-effect waves-light btn-success' title='Patient History'><i class=\"feather
+            icon-check\"></i></a>":"";
         })
         ->editColumn('courierSent', function ($row) {
             if($row->isOnline==1)
             {
-                return $row->courierSent==1 ? 'Yes':'No';
+                return $row->courierSent==1 ? '<img src="'.asset("check-square.svg").'">':'';
             }
             else
             {
@@ -340,7 +342,7 @@ class ReportsController extends Controller
 
             $balanceAmount = $balanceAmount->sum('balancePayment');
 
-            $paymethod_total = MyEvent::select('paymentMode', DB::raw('SUM(feeAmount) as totalFee'))
+            $paymethod_total = MyEvent::selectRaw('COALESCE(paymentMode, "Blank/Others") AS paymentMode, COALESCE(SUM(feeAmount), 0) AS totalFee')
                 ->whereDate('dtStart', '>=', (string)date("Y-m-d", strtotime($dtFrom)))
                 ->whereDate('dtStart', '<=', (string)date("Y-m-d", strtotime($dtTo)));
                 
@@ -358,8 +360,7 @@ class ReportsController extends Controller
                     }
                 }
 
-                $paymethod_total = $paymethod_total->where('paymentMode', '!=', '')
-                ->groupBy('paymentMode')
+                $paymethod_total = $paymethod_total->groupBy('paymentMode')
                 ->get();
 
             $closingBalance = $openingBalance + ($totalFees-$balanceAmount);
