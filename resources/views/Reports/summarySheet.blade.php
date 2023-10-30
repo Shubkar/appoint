@@ -47,11 +47,11 @@
         }
 
         .thead-blu th {
-            color: #fff;
-            background-color: #2fbaff;
+            color: #404040;
+            background-color: #ecf5ff;
             border-color: #fff;
             font-weight: 800;
-            width:50%;
+            width: 50%;
         }
         a.dt-button {
             font-size: 1.0em!important;
@@ -116,7 +116,7 @@
                                     </div>
                                     <div class="card-block">
                                         <div class="row">
-                                            <div class="col-sm-4 col-xs-12 col-md-6 col-lg-6 col-xl-6">
+                                            <div class="col-sm-4 col-xs-12 col-md-6 col-lg-6 col-xl-6" style="padding-left: 0px;">
                                                 <div class="form-group row">
                                                     <label class="col-sm-2 col-form-label" style="text-align: right;">Doctor</label>
                                                     <div class="col-sm-10">
@@ -310,7 +310,7 @@
 
                                         </table>
                                         <!-- <div class="d-flex justify-content-between">...</div> -->
-                                        <div class="row" style="margin-top: 45px; margin-bottom: 25px;">
+                                        <div class="row" style="margin-top: 45px; margin-bottom: 25px;border: 2px solid;">
 
                                             <div class="col-sm-12 col-xs-12 col-md-4 col-lg-4 col-xl-4 vertical-line">
                                                 <label class="col-form-label" style="text-align: right;">Total Amount</label>
@@ -989,19 +989,28 @@
 
                     /* var htmlResult='<tr><td><strong>Total Fees: </strong></td><td>'+result.totalFees+'</td></tr><tr><td><strong>Total Received: </strong></td><td>'+result.totalFees-result.balanceAmount+'</td></tr><tr><td><strong>Closing Balance: </strong></td><td>'+result.closingBalance+'</td></tr>';
                     $('#payment_mode_total').html(htmlResult); */
-                    let paymode_total_html_head = '<tr><th colspan="2" class="text-center">Total Amount by Payment Methods</th></tr>';
+                    let paymode_total_html_head = '<tr><th colspan="2" class="text-center" style="font-weight: 900;">Total Amount by Payment Methods</th></tr>';
                     $('#payment_mode_total').append(paymode_total_html_head);
                     var fees_sum = 0;
                     $.each( result.paymethod_total, function( key, val ) {
                         var htmlcss = '';
-                        if(val.paymentMode == "Blank/Others") {
+                        var show_blank = 0;
+                        if(val.paymentMode == "Blank/Others" && parseFloat(val.totalFee) > 0) {
                             htmlcss = ' style="color:#db1e1e !important;"';
+                            show_blank = 1;
+                            alert("hi");
                         }
-                        let paymode_total_html = '<tr class="text-center"><th><strong'+htmlcss+'>'+val.paymentMode+': </strong></th><td'+htmlcss+'>'+val.totalFee+'</td></tr>';
+                        var paymode_total_html = '';
+                        if(show_blank == 1) {
+                            paymode_total_html = '<tr class="text-center"><th><strong>'+val.paymentMode+': </strong></th><td'+htmlcss+'>'+val.totalFee+'</td></tr>';
+                        } else if(val.paymentMode != "Blank/Others") {
+                            paymode_total_html = '<tr class="text-center"><th><strong>'+val.paymentMode+': </strong></th><td>'+val.totalFee+'</td></tr>';
+                        }
+                        
                         fees_sum += val.totalFee;
                         $('#payment_mode_total').append(paymode_total_html);
                     });
-                    let paymode_total_html = '<tr class="text-center"><th><strong>Total : </strong></th><td>'+fees_sum+'</td></tr>';
+                    let paymode_total_html = '<tr class="text-center"><th><strong style="font-weight: 900;">Total : </strong></th><td style="font-weight: 900;">'+fees_sum+'</td></tr>';
                     $('#payment_mode_total').append(paymode_total_html);
                    // $('#closingBalance').html('<h8>Closing Balance: </h8>'+result.closingBalance);
                     if(result.allowEdit)
