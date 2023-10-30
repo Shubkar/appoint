@@ -163,7 +163,7 @@ class ReportsController extends Controller
             $query=$query->where('isOnline',$isonline);
         }
         
-        $results = $query->get();
+        $results = $query->orderBy('created_at','DESC')->get();
         // $customer=Customer::find($customerId);
         foreach($results as &$wht) {
 
@@ -211,7 +211,7 @@ class ReportsController extends Controller
             //change over here
             $action = "<a href='/editAppointment/" . $customer->id . "' class='btn waves-effect waves-light btn-primary'><i
                     class=\"feather icon-edit\" title='Edit'></i></a>";
-                    $action = $action . " | " . "<a href='#large-Modal'
+                    $action = $action . " | " . "<a href='#upload_Modal'
                         class='btn waves-effect waves-light btn-primary openLargeModal' data-toggle='modal'
                         title='Upload Report' data-appointmentId='".$customer->id ."'
                         data-caseId='".$customer->caseId ."'
@@ -251,6 +251,11 @@ class ReportsController extends Controller
             $action = $action . " | " . "<a href='/PatientHistory/" . $customer->caseId . "'
                 class='btn waves-effect waves-light btn-secondary' title='Patient History'><i class=\"feather
                     icon-user\"></i></a>";
+
+            if(!empty($customer->caseId)) {
+                $action=$action." | "."<a href='/directory/".$customer->caseId."'
+                    class='btn waves-effect waves-light btn-success' title='Directory'><i class=\"feather icon-folder\"></i></a>";
+            }
 
             return $action;
         })
@@ -502,18 +507,18 @@ class ReportsController extends Controller
             $images = $request->file('file');
             foreach($images as $image)
             {
-            $objReport=new PatientReports();
+                $objReport=new PatientReports();
 
-            $new_name = $image->getClientOriginalName()."_".Carbon::now()->format('YmdHis') . '.' .
-            $image->getClientOriginalExtension();
-            // $image->move(public_path('reports'), $new_name);
-            $image->storeAs('public/Reports/',$new_name);
-            //$imgName='storage/Reports/'.$new_name;
-            $objReport->appointmentId=$request->get('uploadAppointmentId');
-            $objReport->caseId=$request->get('uploadCaseId');
-            $objReport->reportUrl='storage/Reports/'.$new_name;
-            $objReport->save();
-            $image_code .= '<div class="col-md-3" style="margin-bottom:24px;"><img src="/images/'.$new_name.'"
+                $new_name = $image->getClientOriginalName()."_".Carbon::now()->format('YmdHis') . '.' .
+                $image->getClientOriginalExtension();
+                // $image->move(public_path('reports'), $new_name);
+                $image->storeAs('public/Reports/',$new_name);
+                //$imgName='storage/Reports/'.$new_name;
+                $objReport->appointmentId=$request->get('uploadAppointmentId');
+                $objReport->caseId=$request->get('uploadCaseId');
+                $objReport->reportUrl='storage/Reports/'.$new_name;
+                $objReport->save();
+                $image_code .= '<div class="col-md-3" style="margin-bottom:24px;"><img src="/images/'.$new_name.'"
                     class="img-thumbnail" /></div>';
             }
 

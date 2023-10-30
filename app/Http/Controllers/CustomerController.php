@@ -240,6 +240,25 @@ class CustomerController extends Controller
         }
     }
 
+    function uploadpatientfile_2(Request $request) {
+        try {
+
+            $path = $request->file('upload_patient_file')->store($request->caseId.'/', 's3');
+
+            DB::table('patient_files')->insert(['caseId' => $request->caseId, 'title' => $request->title, 'file' => basename($path)]);
+
+            return response()->json([
+                'success' => 200,
+                'message' => 'File uploaded successfully.',
+            ], 200);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred: ' . $ex->getMessage(),
+            ], 500);
+        }
+    }
+
     function webcam_capture(Request $request) {
         try {
             $validator = Validator::make($request->all(), [

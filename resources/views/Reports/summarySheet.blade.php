@@ -364,6 +364,8 @@
                               <input type="submit" name="upload" value="Upload" class="btn btn-success" />
                             </div>
                         </div>
+                        
+                        <button type="button" class="btn btn-primary" id="uploadButton">Upload</button>
                     </form>
                     <br />
                     <div class="progress" style="height: 25px;">
@@ -432,6 +434,36 @@
     </div>
 
 
+    <!-- Modal -->
+    <div class="modal fade" id="upload_Modal" tabindex="-1" role="dialog" aria-labelledby="upload_profilePicModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form class="UploadFile" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="upload_profilePicModalLabel">Upload Profile Picture</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="file_titile">Title</label>
+                            <input type="text" name="title" class="form-control" placeholder="Enter Title or File Name" required>
+                        </div>
+                            
+                        <input type="file" name="upload_patient_file">
+                        <input type="hidden" name="caseId" id="caseId">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
 
 @endsection
 @section('scripts')
@@ -487,7 +519,6 @@
     /* $("#dateTo").keyup(function(){
         $("#dateFrom").val($("#dateTo").val());
     }); */
-
 
         function loadCustomers(bool) {
 
@@ -998,7 +1029,6 @@
                         if(val.paymentMode == "Blank/Others" && parseFloat(val.totalFee) > 0) {
                             htmlcss = ' style="color:#db1e1e !important;"';
                             show_blank = 1;
-                            alert("hi");
                         }
                         var paymode_total_html = '';
                         if(show_blank == 1) {
@@ -1176,32 +1206,86 @@
      // $('#addBookDialog').modal('show');
 });
 
-function validate_server_fetch() {
-     $('#calendarId').val($('#userId').val());
-            if($('#calendarId').val()=="0" || $('#calendarId').val()=="")
-                {
-                    proceed=0;
+        function validate_server_fetch() {
+            $('#calendarId').val($('#userId').val());
+            if($('#calendarId').val()=="0" || $('#calendarId').val()=="") {
+                proceed=0;
+                swal({
+                    title: "Error",
+                    text: "Please Select Doctor to Fetch Appointments!",
+                    type: "error",
+                    showCancelButton: false,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "OK!",
+                    closeOnConfirm: false
+                });
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        $('#upload_Modal').on('show.bs.modal', function(e) { 
+            var id = $(e.relatedTarget).data('caseId');
+            $(e.currentTarget).find('input[name="caseId"]').val(id);
+        });
+
+        $(document).on("click", ".openLargeModal", function () {
+            var caseId=$(this).data('caseid');
+            $(".modal-body #caseId").val( caseId );
+        });
+        
+        $('.UploadFile').submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            $.ajax({
+                url: "{{url('uploadpatientfile_2')}}",
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    console.log(data);
+                    if(data.success == "200") {
+                        swal({
+                            title: "Success",
+                            text: data.message,
+                            type: "success",
+                            showCancelButton: false,
+                            confirmButtonClass: "btn-danger",
+                            confirmButtonText: "OK!",
+                            closeOnConfirm: true
+                        });
+                        $('#upload_Modal').modal('toggle');
+                        $('.UploadFile').trigger("reset"); //#states_form id which form  idneeds to be reset(reset form)
+                        // $('#footer-search').DataTable().ajax.reload();
+                    } else {  
+                        swal({
+                            title: "Error",
+                            text: data.message,
+                            type: "error",
+                            showCancelButton: false,
+                            confirmButtonClass: "btn-danger",
+                            confirmButtonText: "OK!",
+                            closeOnConfirm: true
+                        });
+                    }
+                },
+                error:function(data){
                     swal({
                         title: "Error",
-                        text: "Please Select Doctor to Fetch Appointments!",
+                        text: data.message,
                         type: "error",
                         showCancelButton: false,
                         confirmButtonClass: "btn-danger",
                         confirmButtonText: "OK!",
-                        closeOnConfirm: false
+                        closeOnConfirm: true
                     });
-                     return false;
                 }
-                else
-                {
-                    return true;
-                }
-        }
-
-        
-
-
-        
+            });
+        });
     </script>
 
 @endsection

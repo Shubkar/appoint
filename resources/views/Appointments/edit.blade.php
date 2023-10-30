@@ -82,7 +82,9 @@
                                                         <input type="text" {{$appointment->caseId!='NC'?'readonly':''}} name="caseId" id="caseId"
                                                                class="form-control {{ $errors->has('caseId') ? ' is-invalid' : '' }}"
                                                                value="{{$appointment->caseId}}">
+                                                        @if(!empty($appointment->caseId))  
                                                         <a href='/customers/editCustomer/{{ $customer->id }}' class='btn waves-effect waves-light btn-primary' title='Edit'>Edit</a>
+                                                        @endif
                                                         </div>
                                                     </div>
                                                 </div>

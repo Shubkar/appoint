@@ -45,6 +45,7 @@ Route::post('/customers/postCSV','CustomerController@postCSV');
 Route::post('/updateCustomer','CustomerController@updateCustomer');
 Route::get('/directory/{caseId}','CustomerController@directory');
 Route::post('/uploadpatientfile','CustomerController@uploadpatientfile');
+Route::post('/uploadpatientfile_2','CustomerController@uploadpatientfile_2');
 Route::post('/fetch_all_files','CustomerController@fetch_all_files');
 Route::post('/deletpateintFile','CustomerController@deletpateintFile');
 Route::get('/archive','CustomerController@archive');

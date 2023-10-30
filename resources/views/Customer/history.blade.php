@@ -53,6 +53,14 @@
                                                 <h6>Ethnicity:  @if(!@empty($Customer->ethnicity)) {{ $Customer->ethnicity }} @else NA @endif </h6>
                                             </div>
                                             <div class="col-12">
+                                            @if(!empty($Customer->caseId)) 
+                                                <a href='/directory/{{$Customer->caseId}}'
+                                                    class='btn waves-effect waves-light btn-success' title='Directory'><i class="feather icon-folder"></i></a>
+                                            @endif
+                                            <a href='/customers/editCustomer/{{ $Customer->id }}' class='btn waves-effect waves-light btn-primary' title='Edit'><i class="feather icon-edit"></i></a>
+                
+                                            </div>
+                                            <div class="col-12">
                                                 <hr>
                                                 <div class="table-responsive">
                                                     <table class="table table-striped thead-dark table-bordered dt-responsive dataTable" id="patient_history">
