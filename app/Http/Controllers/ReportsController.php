@@ -78,7 +78,6 @@ class ReportsController extends Controller
 
             return view('Reports.summarySheet', compact('errMSg','pharmacistNo','doctors','followupAppointment','whatsappMsg'));
         } else {
-
             return view('Reports.summarySheet', compact('pharmacistNo','doctors'));
         }
     }
@@ -103,11 +102,11 @@ class ReportsController extends Controller
          $request->session()->put('followup', $followup);
          $request->session()->put('isonline', $isonline); */
 
-         $dtFrom = Carbon::createFromFormat('Y-m-d', $dtFrom);
-         $dtTo = Carbon::createFromFormat('Y-m-d', $dtTo);
+        //  $dtFrom = Carbon::createFromFormat('Y-m-d', $dtFrom);
+        //  $dtTo = Carbon::createFromFormat('Y-m-d', $dtTo);
 
         $defaultCountryCode = Auth::user()->default_Country_Code;
-        $query = MyEvent::select(DB::raw("`id`,`customerName`,`caseId`,`mobileNumber`,`dtStart`,dtStart as
+        $query = MyEvent::select(DB::raw("`id`,`customerName`,`caseId`,`mobileNumber`,`dtStart`,TIME(dtStart) as
         aTime,`feeAmount`,`balancePayment`,`paymentMode`,`remarks`,`invoiceNumber`, '' as
         action,`chiefComplaint`,`symptoms`,`dignosis`,`medicine`,`courier`,`awbNumber`,`isOnline`,'" . $template . "' as
         template,`courierSent`,`folloupBooked`"));
@@ -119,14 +118,14 @@ class ReportsController extends Controller
                 $query=$query->where('userId',$userId);
             }
 
-            if($forFeeReport==1)
+           /*  if($forFeeReport==1)
             {
                 $query=$query->orderBy('paymentMode');
             }
             else
             {
                 $query=$query->orderBy('dtStart');
-            }
+            } */
 
         if ($courier != null) {
             if ($courier != -1) {
@@ -163,7 +162,7 @@ class ReportsController extends Controller
             $query=$query->where('isOnline',$isonline);
         }
         
-        $results = $query->orderBy('created_at','DESC')->get();
+        $results = $query->orderBy('dtStart','desc')->get();
         // $customer=Customer::find($customerId);
         foreach($results as &$wht) {
 
@@ -276,9 +275,6 @@ class ReportsController extends Controller
         })
             ->editColumn('dtStart', function ($row) {
                 return Carbon::createFromFormat('Y-m-d H:i:s', $row->dtStart)->format('d-m-Y');
-            })
-            ->editColumn('aTime', function ($row) {
-                return Carbon::createFromFormat('Y-m-d H:i:s', $row->dtStart)->format('H:i');
             })
             ->escapeColumns([])
             ->make(true);

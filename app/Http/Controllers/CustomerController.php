@@ -155,7 +155,7 @@ class CustomerController extends Controller
 
     function PatientHistory($custId = 0) {
         try { 
-            $Customer = Customer::where('caseId', $custId)->select('caseId','name','mobile','email','gender','age','address','ethnicity')->first();
+            $Customer = Customer::where('caseId', $custId)->select('id','caseId','name','mobile','email','gender','age','address','ethnicity')->first();
             $Bookings = MyEvent::select(DB::raw("`customerName`,`caseId`,`mobileNumber`,`dtStart`,dtStart as
             aTime,`feeAmount`,`balancePayment`,`paymentMode`,`remarks`,`invoiceNumber`,`chiefComplaint`,`symptoms`,`dignosis`,`medicine`,`courier`,`awbNumber`,`isOnline`,`courierSent`,`folloupBooked`, `users`.`name` as `doctor`"))
             ->join('users', 'users.id', '=', 'my_events.userId')
@@ -327,6 +327,7 @@ class CustomerController extends Controller
             $files = DB::table('patient_files')->where('caseId', $request->caseId)->whereNULL('deleted_at')->get();
 
             foreach($files as $row) {
+                $row->created_at = date("d-m-Y h:i", strtotime($row->created_at));
                 $row->filepath = Storage::disk('s3')->temporaryUrl($request->caseId."/".$row->file, now()->addMinutes(30)); // Adjust the expiration time as needed
             }
             return response()->json([
