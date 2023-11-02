@@ -145,7 +145,7 @@
                     $('.show_files').empty();
                     if(data.data.length > 0) {
                         $.each( data.data, function( key, val ) {
-                            filehtml += '<div class="col-12 col-md-4 col-lg-4"> <div class="card shadow rouded p-3"> <div class="d-flex justify-content-between"> <h5> File : '+val.title+'<br><small><strong> Time :'+val.created_at+'</stromg></small></h5> <a href="'+val.filepath+'" class="btn btn-success btn-sm" target="_blank">Open</a> <button class="btn btn-danger btn-sm" type="button" data-id="'+val.id+'" data-title="'+val.title+'" data-toggle="modal" data-target="#FileDeleteModal">Delete</button> </div> </div> </div>';
+                            filehtml += '<div class="col-12 col-md-4 col-lg-4"> <div class="card shadow rouded p-3"> <div class="d-flex justify-content-between"> <h5> File : '+val.title+'<br><small><strong> Uploaded on :'+val.created_at+'</stromg></small></h5> <a href="'+val.filepath+'" class="btn btn-success btn-sm" target="_blank">Open</a> <button class="btn btn-danger btn-sm" type="button" data-id="'+val.id+'" data-title="'+val.title+'" data-toggle="modal" data-target="#FileDeleteModal">Delete</button> </div> </div> </div>';
                         });
                     } else {
                         filehtml = '<h5 class="p-5 text-danger"> No Files Found </h5>';

@@ -173,7 +173,7 @@ class CustomerController extends Controller
 
     function fetch_all_archive_files() {
         try {
-            $files = DB::table('patient_files')->join('customers', 'patient_files.caseId', '=', 'customers.caseId')->whereNotNull('deleted_at')->select('patient_files.*','customers.name', 'customers.caseId')->get();
+            $files = DB::table('patient_files')->join('customers', 'patient_files.caseId', '=', 'customers.caseId')->whereNotNull('patient_files.deleted_at')->select('patient_files.*','customers.name', 'customers.caseId')->distinct('customers.name','customers.caseId')->orderBy('patient_files.created_at','desc')->get();
 
             foreach($files as $row) {
                 $row->filepath = Storage::disk('s3')->temporaryUrl($row->caseId."/".$row->file, now()->addMinutes(30)); // Adjust the expiration time as needed
@@ -324,7 +324,7 @@ class CustomerController extends Controller
 
     function fetch_all_files(Request $request) {
         try {
-            $files = DB::table('patient_files')->where('caseId', $request->caseId)->whereNULL('deleted_at')->get();
+            $files = DB::table('patient_files')->where('caseId', $request->caseId)->whereNULL('deleted_at')->orderBy('patient_files.created_at','desc')->get();
 
             foreach($files as $row) {
                 $row->created_at = date("d-m-Y h:i", strtotime($row->created_at));
