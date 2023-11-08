@@ -162,7 +162,7 @@ class ReportsController extends Controller
             $query=$query->where('isOnline',$isonline);
         }
         
-        $results = $query->orderBy('dtStart','desc')->get();
+        $results = $query->orderBy('dtStart','asc')->get();
         // $customer=Customer::find($customerId);
         foreach($results as &$wht) {
 

@@ -229,7 +229,7 @@ class MyEventsController extends Controller
                     To,<br /><br />
                     <strong>Whomsoever it may be concerned.</strong> <br /><br />
 
-                    This is to certify that above named client consulted me for homeopathy - alternative treatment for
+                    This is to confirm that above named client consulted me for homeopathy - alternative treatment for
                     his/her health condition, suffering from ". $appointment->chiefComplaint ." Symptom like
                     ". $appointment->symptoms ."<br /><br />
 
@@ -241,7 +241,9 @@ class MyEventsController extends Controller
 
                     <br /><br /><br />
 
-
+                    <p><img src='". 'http://'.request()->getHttpHost(). $doc->stampImage."'/><br />
+                    <span style='font-size:11pt'><span
+                                style='font-family:Calibri,sans-serif'>___________________</span></span></p>
                     Signature/Stamp<br />
                     Manisha Lakhekar – Homeopathy Consultant
 
@@ -274,13 +276,15 @@ class MyEventsController extends Controller
                         To,<br /><br />
                         <strong>Whomsoever it may be concerned.</strong> <br /><br />
 
-                        This is to certify that above named client is under homeopathy treatment for his/her
+                        This is to confirm that above named client is under homeopathy treatment for his/her
                         healthcondition, suffering from ". $appointment->chiefComplaint .". We have prescribed him/her the
                         following homoeopathic remedies which he/she is carrying with his/her during her travel.<br /><br />
                         ". $appointment->medicine ."
                         <br /><br /><br />
 
-
+                        <p><img src='". 'http://'.request()->getHttpHost(). $doc->stampImage."'/><br />
+                        <span style='font-size:11pt'><span
+                                style='font-family:Calibri,sans-serif'>___________________</span></span></p>
                         Signature/Stamp<br />
                         Manisha Lakhekar – Homeopathy Consultant
 
