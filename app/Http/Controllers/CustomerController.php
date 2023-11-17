@@ -218,10 +218,9 @@ class CustomerController extends Controller
 
             if ($validator->fails()) {
                 return response()->json([
-                    'success' => 400,
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors(),
-                ], 400);
+                    'success' => 0,
+                    'message' => $validator->messages()->all()
+                ], 200);
             }
 
             $path = $request->file('upload_patient_file')->store($request->caseId.'/', 's3');

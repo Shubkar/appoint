@@ -1,6 +1,39 @@
 @extends('layouts.app')
 @section('headerScripts')
 <meta name="_token" content="{{csrf_token()}}"/>
+<style>
+    .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Adjust the opacity here (0.5 in this case) */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Ensure it's on top of other elements */
+}
+
+.loader {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.card-highlight{
+    background-color: #71b3ff;
+    box-shadow: 10px 12px 5px #8b9699;
+}
+</style>
 @endsection
 @section('contents')
 
@@ -71,6 +104,10 @@
 
 </div>
 
+<div class="overlay" style="display:none;">
+    <div class="loader"></div>
+</div>
+
 <!-- Modal -->
 <div class="modal fade" id="FileUploadModal" tabindex="-1" role="dialog" aria-labelledby="FileUploadModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -84,8 +121,15 @@
       </div>
       <div class="modal-body">
         <div class="mb-3">
-            <label for="file_titile">Title</label>
-            <input type="text" name="title" class="form-control" placeholder="Enter Title or File Name" required>
+            <!-- <label for="file_titile">Title ({{ $caseId }}-......)</label>
+            <input type="text" name="title" class="form-control" placeholder="Enter Title or File Name" required> -->
+            <label class="sr-only" for="inlineFormInputGroupUsername">Title</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                <div class="input-group-text">{{ $caseId }} - </div>
+                </div>
+                <input type="text" name="title" class="form-control" id="inlineFormInputGroupUsername" placeholder="Enter Title or File Name" required>
+            </div>
         </div>
         
         <input type="file" name="upload_patient_file">
@@ -144,8 +188,14 @@
                     var filehtml = '';
                     $('.show_files').empty();
                     if(data.data.length > 0) {
+                        var status = 0;
                         $.each( data.data, function( key, val ) {
-                            filehtml += '<div class="col-12 col-md-4 col-lg-4"> <div class="card shadow rouded p-3"> <div class="d-flex justify-content-between"> <h5> File : '+val.title+'<br><small><strong> Uploaded on :'+val.created_at+'</stromg></small></h5> <a href="'+val.filepath+'" class="btn btn-success btn-sm" target="_blank">Open</a> <button class="btn btn-danger btn-sm" type="button" data-id="'+val.id+'" data-title="'+val.title+'" data-toggle="modal" data-target="#FileDeleteModal">Delete</button> </div> </div> </div>';
+                            let csshighlight = '';
+                            if(status == 0) {
+                                csshighlight = ' card-highlight';
+                            }
+                            filehtml += '<div class="col-12 col-md-4 col-lg-4"> <div class="card shadow rouded p-3'+csshighlight+'"> <div class="d-flex justify-content-between"> <h5> File : {{ $caseId }}-'+val.title+'<br><small><strong> Uploaded on :'+val.created_at+'</stromg></small></h5> <a href="'+val.filepath+'" class="btn btn-success btn-sm" target="_blank">Open</a> <button class="btn btn-danger btn-sm" type="button" data-id="'+val.id+'" data-title="'+val.title+'" data-toggle="modal" data-target="#FileDeleteModal">Delete</button> </div> </div> </div>';
+                            status = 1;
                         });
                     } else {
                         filehtml = '<h5 class="p-5 text-danger"> No Files Found </h5>';
@@ -157,6 +207,7 @@
         
 
         $('#uploadButton').click(function() {
+        $('.overlay').show();
             var formData = new FormData($('#uploadForm')[0]);
             
             $.ajax({
@@ -166,6 +217,7 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
+                    $('.overlay').hide();
                     console.log(response);
                     if(response.success == 200) {
                         $('#FileUploadModal').modal('toggle');
