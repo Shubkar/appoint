@@ -185,6 +185,9 @@ class ReportsController extends Controller
                         class=\"feather icon-message-circle\"></i></a>";
             }
 
+            $wht->editappointment =  "<a href='/editAppointment/" . $wht->id . "' class='btn waves-effect waves-light btn-primary'><i
+            class=\"feather icon-edit\" title='Edit'></i></a>";
+
         }
 
         if ($results->isEmpty()) {

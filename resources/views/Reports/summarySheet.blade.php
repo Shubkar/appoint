@@ -255,6 +255,10 @@
                                                     Time
                                                 </th>
                                                 <th class="sorting" tabindex="0" aria-controls="footer-search"
+                                                    aria-label="Office: activate to sort column ascending">
+                                                    Edit
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="footer-search"
                                                     aria-label="Start date: activate to sort column ascending">Fees
                                                 </th>
                                                 <th class="sorting" tabindex="0" aria-controls="footer-search"
@@ -506,19 +510,24 @@
 
     $("#dateFrom").change(function(){
         $("#dateTo").val($("#dateFrom").val());
+        localStorage.setItem('dateFrom',$("#dateFrom").val());
+                
     });
 
-    /* $("#dateTo").change(function(){
-        $("#dateFrom").val($("#dateTo").val());
-    }); */
+    $("#dateTo").change(function(){
+        // $("#dateFrom").val($("#dateTo").val());
+        localStorage.setItem('dateTo',$("#dateTo").val());
+    });
 
     $("#dateFrom").keyup(function(){
         $("#dateTo").val($("#dateFrom").val());
+        localStorage.setItem('dateFrom',$("#dateFrom").val());
     });
 
-    /* $("#dateTo").keyup(function(){
-        $("#dateFrom").val($("#dateTo").val());
-    }); */
+    $("#dateTo").keyup(function(){
+        // $("#dateFrom").val($("#dateTo").val());
+        localStorage.setItem('dateTo',$("#dateTo").val());
+    });
 
         function loadCustomers(bool) {
 
@@ -567,18 +576,24 @@
             {
                 $("#dateFrom").val('{{Carbon\Carbon::now()->format("d-m-Y")}}');
                 $("#dateTo").val('{{Carbon\Carbon::now()->format("d-m-Y")}}');
+                localStorage.setItem('dateFrom', '{{Carbon\Carbon::now()->format("d-m-Y")}}');
+                localStorage.setItem('dateTo', '{{Carbon\Carbon::now()->format("d-m-Y")}}');
                 validateForm(true);
             }
             else if(dateOffset==1)
             {
                 $("#dateFrom").val('{{Carbon\Carbon::now()->addDays(1)->format("d-m-Y")}}');
                 $("#dateTo").val('{{Carbon\Carbon::now()->addDays(1)->format("d-m-Y")}}');
+                localStorage.setItem('dateFrom', '{{Carbon\Carbon::now()->addDays(1)->format("d-m-Y")}}');
+                localStorage.setItem('dateTo', '{{Carbon\Carbon::now()->addDays(1)->format("d-m-Y")}}');
                 validateForm(true);
             }
             else
             {
                 $("#dateFrom").val('{{Carbon\Carbon::now()->format("d-m-Y")}}');
                 $("#dateTo").val('{{Carbon\Carbon::now()->format("d-m-Y")}}');
+                localStorage.setItem('dateFrom', '{{Carbon\Carbon::now()->format("d-m-Y")}}');
+                localStorage.setItem('dateTo', '{{Carbon\Carbon::now()->format("d-m-Y")}}');
                 loadCustomers(true);
 
             }
@@ -602,15 +617,25 @@
 
             // $('#dateFrom').val('{{session()->get("DtFrom")}}');
             // $('#dateTo').val('{{session()->get("DtTO")}}');
-            $("#dateFrom").val('{{Carbon\Carbon::now()->format("d-m-Y")}}');
-            $("#dateTo").val('{{Carbon\Carbon::now()->format("d-m-Y")}}');
+            var dateFrom = '{{Carbon\Carbon::now()->format("d-m-Y")}}';
+            var dateTo = '{{Carbon\Carbon::now()->format("d-m-Y")}}';
+            if(localStorage.getItem('dateFrom') == null) {
+                /* $.cookie("dateFrom", dateFrom);
+                $.cookie("dateTo", dateTo); */
+
+                localStorage.setItem('dateFrom',dateFrom);
+                localStorage.setItem('dateTo',dateTo);
+            }
+
+            $("#dateFrom").val(localStorage.getItem('dateFrom'));
+            $("#dateTo").val(localStorage.getItem('dateTo'));
 
             $("#dateFrom").datepicker({
-    format: "dd-mm-yyyy",
-    todayBtn: "linked",
-    autoclose: true,
-    todayHighlight: true
-});
+                format: "dd-mm-yyyy",
+                todayBtn: "linked",
+                autoclose: true,
+                todayHighlight: true
+            });
 
         google_server();
         function google_server() {
@@ -716,6 +741,7 @@
                         {"data": "whatsapp"},
                         {"data": "dtStart"},
                         {data: 'aTime', name: 'dtStart'},
+                        {"data": "editappointment"},
                         {"data": "feeAmount"},
                         {"data": "paymentMode"},
                         {"data": "isOnline"},
@@ -790,7 +816,7 @@
                     "initComplete":function( settings, json){
                          $("#footer-search").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
                         //console.log(json);
-                    // expandAllDt();
+                        expandAllDt();
                         // call your function here
                     },
                     rowCallback: function(row, data, index) {
@@ -808,9 +834,28 @@
             getBalanceShet(dtStart,dtEnd);
         }
 
-        /* function expandAllDt() {
+        function expandAllDt() {
             table.rows(':not(.parent)').nodes().to$().find('td:first-child').trigger('click');
-        } */
+            callcollaspebtn();
+        }
+
+        function callcollaspebtn() {
+            var expand_btn = '<a class="dt-button buttons-collaspe" data-status="open" tabindex="0" aria-controls="footer-search" href="#" title="expand"><span>Expand</span></a>';
+            $('.dt-buttons').append(expand_btn);
+        }
+
+        $(document).on("click", ".buttons-collaspe", function () {
+            var status = $(".buttons-collaspe").data("status");
+            if(status == "open") {
+                table.rows(':not(.parent)').nodes().to$().toggle();
+                table.draw();
+                $(".buttons-collaspe").data('status','close');
+            } else {
+                table.rows(':not(.parent)').nodes().to$().find('td:first-child').trigger('click');
+                $(".buttons-collaspe").data('status','open');
+            }
+        });
+
         function newexportaction(e, dt, button, config) {
             var self = this;
             var oldStart = dt.settings()[0]._iDisplayStart;

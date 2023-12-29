@@ -188,6 +188,9 @@ class AppointmentController extends Controller
 
             $followupAppointment=MyEvent::where('eventId',$savedEvent->id)->orderBy('id','DESC')->first();
             $template = MsgTemplates::find(1)->actual_msg;
+            if ($request->get('Quick_lblOnline') == 1) {
+                $template = "Your Homeopathy WhatsApp/Zoom Online Consultation appointment has been Confirmed for #FIRST#  Case ID# #CASE# #TIME#*. Please be on time. For new/first consult please bring your existing reports if any. For *Follow up appointment bring your existing Homeopathy medicines even if empty. Kindly read our cancellation policy in the link below. https://drmanishal.com/cancellation-policy *Please confirm. ok?*.";
+            }
             $whatsappMsg = str_replace('#FIRST#', $followupAppointment->customerName, $template);
             $whatsappMsg = str_replace('#LAST#', '', $whatsappMsg);
             $whatsappMsg = str_replace('#CASE#', $followupAppointment->caseId, $whatsappMsg);
