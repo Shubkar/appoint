@@ -102,7 +102,7 @@
                                                     <label class="col-sm-3 col-form-label">Mobile</label>
                                                     <div class="col-sm-9">
                                                         <input type="text" name="mobileNumber" id="mobileNumber"
-                                                               class="form-control {{ $errors->has('mobileNumber') ? ' is-invalid' : '' }}"
+                                                               class="form-control phoneNumberInput {{ $errors->has('mobileNumber') ? ' is-invalid' : '' }}"
                                                                value="{{$appointment->mobileNumber}}">
                                                     </div>
                                                 </div>

@@ -816,7 +816,8 @@
                     "initComplete":function( settings, json){
                          $("#footer-search").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
                         //console.log(json);
-                        expandAllDt();
+                       // expandAllDt();
+                       callcollaspebtn();
                         // call your function here
                     },
                     rowCallback: function(row, data, index) {
@@ -836,7 +837,6 @@
 
         function expandAllDt() {
             table.rows(':not(.parent)').nodes().to$().find('td:first-child').trigger('click');
-            callcollaspebtn();
         }
 
         function callcollaspebtn() {

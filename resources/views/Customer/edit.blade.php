@@ -84,7 +84,7 @@
                                                             <label class="col-sm-3 col-form-label">Mobile No</label>
                                                             <div class="col-sm-9">
                                                                 <input type="text" name="mobile" id="mobile"
-                                                                    class="form-control {{ $errors->has('mobile') ? ' is-invalid' : '' }}"
+                                                                    class="form-control phoneNumberInput {{ $errors->has('mobile') ? ' is-invalid' : '' }}"
                                                                     value="{{$customer->mobile}}">
                                                             </div>
                                                         </div>

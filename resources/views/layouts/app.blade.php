@@ -208,7 +208,7 @@ header("Pragma: no-cache");
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <input type="text" class="form-control" value="" id="Quick_enter_patientMobile" name="Quick_enter_patientMobile" />
+                    <input type="text" class="form-control phoneNumberInput" value="" id="Quick_enter_patientMobile" name="Quick_enter_patientMobile" />
                 </div>
             </div>
         </div>
@@ -322,7 +322,7 @@ header("Pragma: no-cache");
                                         </li>
 
                                         <li class="{{ (request()->segment(1) == 'reports') ? 'active' : '' }}">
-                                            <a href="/reports/SummarySheetclear" class="waves-effect waves-dark">
+                                            <a href="#" id="manageAppointTable" class="waves-effect waves-dark">
                                                 <span class="pcoded-mtext">Manage Appointments</span>
                                             </a>
                                         </li>
@@ -522,6 +522,29 @@ header("Pragma: no-cache");
             }
             });
     }
+
+    $("#manageAppointTable").click(function(){
+        localStorage.setItem('dateFrom', '{{Carbon\Carbon::now()->format("d-m-Y")}}');
+        localStorage.setItem('dateTo', '{{Carbon\Carbon::now()->format("d-m-Y")}}');
+        window.location.href = "/reports/SummarySheetclear";
+    });
+
+    $('.phoneNumberInput').on('paste', function () {
+        // Get the clipboard data
+        var clipboardData = event.clipboardData || window.clipboardData;
+        var pastedData = clipboardData.getData('text');
+
+        // Remove white spaces from the pasted phone number
+        var phoneNumberWithoutSpaces = pastedData.replace(/\s/g, '');
+
+        // Set the input field value to the phone number without spaces
+        $(this).val(phoneNumberWithoutSpaces);
+
+        // Prevent the default paste behavior
+        return false;
+      });
+
+    
 
     function Quick_loadCustomers() {
         if($('#Quick_select_employee').val()!="0" || $('#Quick_select_employee').val()!="")
