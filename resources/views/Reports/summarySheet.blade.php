@@ -639,7 +639,7 @@
 
         google_server();
         function google_server() {
-            $('#calendarId').val($('#userId').val());
+            $('#calendarId').val(2);
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -1253,7 +1253,7 @@
 });
 
         function validate_server_fetch() {
-            $('#calendarId').val($('#userId').val());
+            $('#calendarId').val(2);
             if($('#calendarId').val()=="0" || $('#calendarId').val()=="") {
                 proceed=0;
                 swal({
