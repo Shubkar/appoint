@@ -131,7 +131,7 @@ class MyEventsController extends Controller
         $prescriptionData=Letters::where('appointmentId',$appointmentId)->where('letterType','Prescription')->first();
 
         if($receiptData==null)
-        {
+        { 
 
             $receiptData=new Letters();
             $receiptData->letterData="
