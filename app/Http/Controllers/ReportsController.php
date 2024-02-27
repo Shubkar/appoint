@@ -164,7 +164,18 @@ class ReportsController extends Controller
         
         $results = $query->orderBy('dtStart','asc')->get();
         // $customer=Customer::find($customerId);
+        $chiefComplaints=DB::table('chief_complaint')->where('status', 1)->get();
         foreach($results as &$wht) {
+
+            $GetchiefComplaint = explode("_",$wht->chiefComplaint);
+            $cc_names = [];
+            foreach($GetchiefComplaint as $cc) {
+                if(!empty($wht->chiefComplaint)) {
+                    $key = array_search($cc, array_column(json_decode($chiefComplaints, true), 'id'));
+                    $cc_names[] = $chiefComplaints[$key]->name;
+                    $wht->chiefComplaint = implode(",", $cc_names);
+                }
+            }
 
             $whatsappMsg = str_replace('#FIRST#', $wht->customerName, $wht->template);
             $whatsappMsg = str_replace('#LAST#', '', $whatsappMsg);
@@ -176,7 +187,7 @@ class ReportsController extends Controller
                     urlencode($whatsappMsg) . "','" . str_replace(' ','',$wht->mobileNumber) . "',1)
                     class='btn waves-effect waves-light btn-success' title='Notification' style='color:#FFFFFF;'><i
                         class=\"feather icon-message-circle\"></i></a>";
-             }
+            }
             else
             {
                 $wht->whatsapp =  "<a id='msg_".$wht->id."' onclick=sendWhatsappMsg('" .

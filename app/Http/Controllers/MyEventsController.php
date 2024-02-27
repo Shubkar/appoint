@@ -64,6 +64,13 @@ class MyEventsController extends Controller
     public function editAppointment($appointmentId)
     {
         $appointment=MyEvent::find($appointmentId);
+        $chiefComplaints=DB::table('chief_complaint')->where('status', 1)->get();
+        $GetchiefComplaint = explode("_",$appointment->chiefComplaint);
+        $cc_names = [];
+        foreach($GetchiefComplaint as $cc) {
+            $key = array_search($cc, array_column(json_decode($chiefComplaints, true), 'id'));
+            $cc_names[$chiefComplaints[$key]->id] = $chiefComplaints[$key]->name;
+        }
         $pharmacistNo=AppSettings::find(4)->settingName;
         $user=User::find($appointment->userId);
         $paymodes=\trim(MasterData::find(2)->masterValues);
@@ -110,7 +117,7 @@ class MyEventsController extends Controller
         $customer = Customer::select('id')->where('caseId', $appointment->caseId)->first();
         
          return
-        view('Appointments.edit',compact('appointment','today','appointmentDate','appointmentTime','paidAmount','calendarUrl','pharmacistNo','user','paymodes','customer'));
+        view('Appointments.edit',compact('appointment','today','appointmentDate','appointmentTime','paidAmount','calendarUrl','pharmacistNo','user','paymodes','customer','chiefComplaints','cc_names'));
     }
 
     public function sickLeave($appointmentId)
@@ -129,6 +136,17 @@ class MyEventsController extends Controller
         $receiptData=Letters::where('appointmentId',$appointmentId)->where('letterType','Receipt')->first();
         $sickLeaveData=Letters::where('appointmentId',$appointmentId)->where('letterType','Sick Leave')->first();
         $prescriptionData=Letters::where('appointmentId',$appointmentId)->where('letterType','Prescription')->first();
+        $chiefComplaints=DB::table('chief_complaint')->where('status', 1)->get();
+
+        $GetchiefComplaint = explode("_",$appointment->chiefComplaint);
+            $cc_names = [];
+            foreach($GetchiefComplaint as $cc) {
+                if(!empty($appointment->chiefComplaint)) {
+                    $key = array_search($cc, array_column(json_decode($chiefComplaints, true), 'id'));
+                    $cc_names[] = $chiefComplaints[$key]->name;
+                    $appointment->chiefComplaint = implode(",", $cc_names);
+                }
+            }
 
         if($receiptData==null)
         {
@@ -387,11 +405,16 @@ if($request->get('feeAmount')<0)
                  $appointment->customerName=$request->get('customerName');
            // }
 
+           $chiefComplaint = explode("_",$request->get('chiefComplaint'));
+           if(is_array($chiefComplaint)) {
+            $chiefComplaint = array_unique($chiefComplaint);
+           }
+
             $appointment->symptoms=$request->get('symptoms');
             $appointment->dignosis=$request->get('dignosis');
             $appointment->feeAmount=$request->get('feeAmount');
             $appointment->paymentMode=$request->get('paymentMode');
-            $appointment->chiefComplaint=$request->get('chiefComplaint');
+            $appointment->chiefComplaint=implode("_",$chiefComplaint);
             $appointment->medicine=$request->get('medicine');
             /* if($request->get('feeAmount')>0)
             {
@@ -730,4 +753,28 @@ if($followupAppointment!=null)
                 return redirect()->action('ReportsController@summarySheet',['errMSg' => $errMSg]);
                 }
                 }
+
+    function add_chief_complaint(Request $request) {
+        try {
+
+            $this->validate($request, [
+                'chief_complaint' => 'required',
+            ]);
+            
+            $chiefComplaintCount = DB::table('chief_complaint')->where('name', $request->chief_complaint)->first();
+            $id = 0;
+            if(!$chiefComplaintCount) {
+                DB::table('chief_complaint')->insert(['name' => $request->chief_complaint]);
+                $id = DB::getPdo()->lastInsertId();
+            } else {
+                $id = $chiefComplaintCount->id;
+            }
+
+            return response()->json(['success'=>'200', 'data' => $id]);
+
+        } catch (\Exception $exception) {
+            echo $exception->getMessage();
+        }
+            
+    }
 }

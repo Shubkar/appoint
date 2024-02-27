@@ -17,6 +17,14 @@
         .select2-container .select2-selection--single {
             height: 46px !important;
         }
+        .ccs{
+            padding: 5px;
+            background-color: aquamarine;
+            border-radius: 10px;
+            font-size: 0.9em;
+            margin: 2px;
+        }
+        .pointer {cursor: pointer;}
     </style>
 
     <link rel="stylesheet" type="text/css" href="/files/assets/pages/advance-elements/css/bootstrap-datetimepicker.css">
@@ -261,9 +269,20 @@
                                                         <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Chief Complaint</label>
                                                     <div class="col-sm-9">
-                                                        <input type="text" name="chiefComplaint" id="chiefComplaint"
-                                                               class="form-control {{ $errors->has('chiefComplaint') ? ' is-invalid' : '' }}"
-                                                               value="{{$appointment->chiefComplaint}}">
+                                                        <div class="display-chief_complaint mb-2">@if(!empty($cc_names)) @foreach($cc_names as $key => $ccc)<span class="ccs">{{ $ccc }} <span class="pointer cc_remove" data-name="{{ $ccc }}" data-id="{{ $key }}">&times;</span></span>@endforeach @endif</div>
+
+                                                        <input type="hidden" name="chiefComplaint" id="chiefComplaint" value="{{$appointment->chiefComplaint}}">
+                                                        <div class="d-flex justify-content-between">
+                                                            <input type="text" list="chief_list" name="SearchchiefComplaint" id="SearchchiefComplaint"
+                                                               class="form-control d-inline {{ $errors->has('chiefComplaint') ? ' is-invalid' : '' }}"
+                                                               > <button type="button" class="btn btn-primary add_chief_complaint">Add</button>
+                                                               <datalist id="chief_list">
+                                                                @foreach($chiefComplaints as $chief)
+                                                                <option value="{{ $chief->name }}">
+                                                                @endforeach
+                                                            </datalist>
+                                                        </div>
+                                                            
                                                     </div>
                                                 </div>
                                                 <div class="form-group row">
@@ -1052,5 +1071,47 @@ function sendAjaxRequest(id) {
                 }
             });
         }
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': '{{csrf_token()}}'
+            }
+        });
+
+        $('.add_chief_complaint').click(function(){
+            var cheif_complaint = $('#SearchchiefComplaint').val();
+            if(cheif_complaint.length > 0) {
+                $.post("{{ route('add_chief_complaint') }}", {chief_complaint: cheif_complaint}, function(data){
+                    if(data.success == 200) {
+                        var get_chiefComplaint = $('#chiefComplaint').val();
+                        if(get_chiefComplaint.length == 0) {
+                            $('#chiefComplaint').val(data.data);
+                        } else {
+                            get_chiefComplaint += "_" + data.data;
+                            $('#chiefComplaint').val(get_chiefComplaint);
+                        }
+                        $('.display-chief_complaint').append('<span class="ccs">'+cheif_complaint+' <span class="pointer cc_remove" data-name="'+cheif_complaint+'" data-id="'+data.data+'">&times;</span></span>');
+                    }
+                });
+            } else {
+                alert("Enter a Chief Complaint");
+            }
+        });
+
+        $(document).on("click", ".cc_remove", function(e) {
+            e.preventDefault();
+            var chief_complaint_id = $(this).data('id');
+            $(this).closest('.ccs').hide(); // Use closest instead of parent
+
+            var get_chiefComplaint = $('#chiefComplaint').val();
+            var chiefComplaintArray = get_chiefComplaint.split("_");
+
+            var index = chiefComplaintArray.indexOf(chief_complaint_id.toString());
+            if (index !== -1) {
+                chiefComplaintArray.splice(index, 1);
+                var updatedChiefComplaint = chiefComplaintArray.join("_");
+                $('#chiefComplaint').val(updatedChiefComplaint);
+            }
+        });
     </script>
 @endsection

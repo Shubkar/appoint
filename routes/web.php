@@ -118,3 +118,5 @@ Route::get('/editAppointmentPayment/{appointmentId}','MyEventsController@editPay
 Route::get('/getAppointmentPayment/{appointmentId}','MyEventsController@getAppointmentPayment');
 Route::post('/deleteAppointmentPayment','MyEventsController@deleteAppointmentPayment');
 Route::post('/payment/savePayment','MyEventsController@saveAppointmentPayment');
+
+Route::post('/add_chief_complaint','MyEventsController@add_chief_complaint')->name('add_chief_complaint');
