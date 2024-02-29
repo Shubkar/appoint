@@ -361,6 +361,11 @@ header("Pragma: no-cache");
                                                 <span class="pcoded-mtext">Fee Reports</span>
                                             </a>
                                         </li>
+                                        <li class="{{ (request()->segment(1) == 'expense') ? 'active' : '' }}">
+                                            <a href="{{ route('expenses.index') }}" class="waves-effect waves-dark">
+                                                <span class="pcoded-mtext">Expense</span>
+                                            </a>
+                                        </li>
                                         <li class="{{ (request()->segment(1) == 'templates') ? 'active' : '' }}">
                                             <a href="/templates/MyTemplates" class="waves-effect waves-dark">
                                                 <span class="pcoded-mtext">Settings</span>

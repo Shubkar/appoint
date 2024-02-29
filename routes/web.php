@@ -13,6 +13,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ExpenseController;
 
 Route::get('/', 'HomeController@login');
 
@@ -118,3 +119,8 @@ Route::get('/editAppointmentPayment/{appointmentId}','MyEventsController@editPay
 Route::get('/getAppointmentPayment/{appointmentId}','MyEventsController@getAppointmentPayment');
 Route::post('/deleteAppointmentPayment','MyEventsController@deleteAppointmentPayment');
 Route::post('/payment/savePayment','MyEventsController@saveAppointmentPayment');
+
+Route::get('/expense','ExpenseController@index')->name('expenses.index');
+Route::post('/store_expense','ExpenseController@store')->name('expenses.store');
+
+Route::get('/expenses/export', 'ExpenseController@export')->name('expenses.export');
