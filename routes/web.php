@@ -117,4 +117,4 @@ Route::get('/feeReports/feeReportClear','ReportsController@feeReportClear');
 Route::get('/editAppointmentPayment/{appointmentId}','MyEventsController@editPayment');
 Route::get('/getAppointmentPayment/{appointmentId}','MyEventsController@getAppointmentPayment');
 Route::post('/deleteAppointmentPayment','MyEventsController@deleteAppointmentPayment');
-Route::post('/payment/savePayment','MyEventsController@saveAppointmentPayment');
+Route::post('/payment/savePayment','MyEventsController@saveAppointmentPayment'); 
