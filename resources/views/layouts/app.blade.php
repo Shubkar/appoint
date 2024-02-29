@@ -825,7 +825,19 @@ header("Pragma: no-cache");
                 $("#Quick_newCase").prop("checked", true);
                 $('#QuickNewPatient').show();
                 $('#QuickOldPatient').hide();
-                $('#Quick_enter_patientCase').val('NC');
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': '{{csrf_token()}}'
+                    }
+                });
+                $.post("{{ route('get_case_id') }}", {type: "regular"}, function(result){
+                    if(result.success == 200) {
+                        $('#Quick_enter_patientCase').val(result.data);
+                    } else {
+                        $('#Quick_enter_patientCase').val('NC');
+                    }
+                });
+                
             }
             else
             {

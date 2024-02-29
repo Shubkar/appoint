@@ -730,4 +730,24 @@ if($followupAppointment!=null)
                 return redirect()->action('ReportsController@summarySheet',['errMSg' => $errMSg]);
                 }
                 }
+
+    function get_case_id(Request $request) {
+        $id = 7;
+        $prefix = '';
+        if ($request->type == "online") {
+            $id = 8;
+            $prefix = 'E';
+        } else if ($request->type == "pet") {
+            $id = 9;
+            $prefix = 'P';
+        }
+
+        $count = Customer::count();
+        $count++;
+        $caseId = $prefix.$count;
+        // $get = AppSettings::find($id);
+
+        return response()->json(['success'=>200, 'data' => $caseId]);
+
+    }
 }
