@@ -172,6 +172,15 @@
                                                         <input type="checkbox" class="js-single" {{$appointment->isOnline==1?'checked':''}} onchange="changeAppointmentType({{$appointment->id}})" />
                                                     </div>
                                                 </div>
+
+                                                <div class="form-group row">
+                                                    <div class="col-sm-3">
+                                                    Consulted
+                                                    </div>
+                                                    <div class="col-sm-9">
+                                                        <input type="radio" class="js-single" name="consulted" id="consulted"{{$appointment->consulted==1?'checked':''}} value="1" />
+                                                    </div>
+                                                </div>
                                                 
                                                 <div class="form-group row">
                                                     <div class="col-sm-12">
@@ -991,6 +1000,11 @@ function sendAjaxRequest(id) {
         function saveCustomerInfo() {
              $('#btnSaveCustomer').prop('disabled', true);
          $('#btnSaveCustomer').prop('value', 'Processing...');
+            var check = 0;
+         if($('#consulted').is(':checked')) {
+            check = 1;
+         }
+         
            $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -1003,7 +1017,8 @@ function sendAjaxRequest(id) {
                     id: $('#id').val(),
                     caseId:$('#caseId').val(),
                     customerName:$('#customerName').val(),
-                    mobileNumber:$('#mobileNumber').val()
+                    mobileNumber:$('#mobileNumber').val(),
+                    consult:check
                 },
                 success: function (result) {
                     swal({

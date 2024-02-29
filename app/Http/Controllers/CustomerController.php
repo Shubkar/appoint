@@ -664,6 +664,9 @@ class CustomerController extends Controller
                     $customer->name=$request->get('customerName');
                     $customer->caseId=$request->get('caseId');
                     $customer->mobile=$request->get('mobileNumber');
+                    if($request->get('consult') == 1) {
+                        $customer->consulted=$request->get('consult');
+                    }
                     $customer->save();
                 }
                 else
@@ -673,6 +676,9 @@ class CustomerController extends Controller
                     $customer->name=$request->get('customerName');
                     $customer->mobile=$request->get('mobileNumber');
                     $customer->exists=true;
+                    if($request->get('consult') == 1) {
+                        $customer->consulted=$request->get('consult');
+                    }
                     $customer->save();
                 }
             }
@@ -680,6 +686,9 @@ class CustomerController extends Controller
             {
                 $customerCheck->name=$request->get('customerName');
                 $customerCheck->exists=true;
+                if($request->get('consult') == 1) {
+                    $customer->consulted=$request->get('consult');
+                }
                 $customerCheck->save();
             }
             if($appointment->mobileNumber!='')
@@ -695,6 +704,9 @@ class CustomerController extends Controller
                 //only udpate that particular appointment
                 $appointment->mobileNumber=$request->get('mobileNumber');
                 $appointment->exists=true;
+                if($request->get('consult') == 1) {
+                    $appointment->consulted=$request->get('consult');
+                }
                 $appointment->save();
             }
 

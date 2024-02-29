@@ -68,7 +68,8 @@ class MyEventsController extends Controller
         $user=User::find($appointment->userId);
         $paymodes=\trim(MasterData::find(2)->masterValues);
         $paymodes=str_ireplace(array("\r","\n",'\r','\n'),',', $paymodes);
-
+        $fetch = Customer::where('caseId', $appointment->caseId)->select('consulted')->first();
+        $appointment->consulted = $fetch->consulted;
          $appointment->caseId= strtoupper(\trim($appointment->caseId));
          if($appointment->caseId=='NC' || $appointment->caseId=='N/C' || $appointment->caseId=='N\\C')
          {
@@ -425,6 +426,7 @@ if($request->get('feeAmount')<0)
               $appointment->awbNumber=$request->get('awbNumber');
               $appointment->balancePayment=($request->get('feeAmount')-$PreviouspaidAmount-$request->get('amountPaid'));
                $appointment->eventStatus='Attended';
+            $appointment->consulted=$request->get('consulted');
               if($appointment->balancePayment==0 && $appointment->invoiceNumber==null)
               {
                   $invoiceNumber=MyEvent::max('invoiceNumber');
