@@ -169,11 +169,10 @@ header("Pragma: no-cache");
         </div>
     </div>
     </div>
-
     <div class="form-group row">
         <div class="col-sm-12">
 
-            <input type="checkbox" name="chkQuickNewPatient" id="chkQuickNewPatient" value="1" onchange="newPatientToggle()"> New Patient
+            <label for="chkQuickNewPatient"><input type="checkbox" name="chkQuickNewPatient" id="chkQuickNewPatient" value="1" onchange="newPatientToggle()"> New Patient</label>
         </div>
     </div>
 
@@ -833,6 +832,13 @@ header("Pragma: no-cache");
                 $('#QuickNewPatient').hide();
                 $('#QuickOldPatient').show();
                 $('#Quick_enter_patientCase').val('');
+            }
+        }
+
+        function newPatientTypeToggle() {
+            var type = $('input[name="appointment_type"]:checked').val();
+            if(type == 2) {
+
             }
         }
 

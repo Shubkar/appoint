@@ -53,7 +53,17 @@
                                     <div class="card-header">
                                         <h5>Patient Info</h5>
                                     </div>
-                                    <div class="card-block">
+                                    <div class="form-group row px-5">
+                                        <div class="col-sm-12">
+
+                                            <label for="appointment_type1"><input type="radio" name="appointment_type" id="appointment_type1" value="1" onchange="newPatientTypeToggle()" checked> Walk In Patient</label>
+
+                                            <label for="appointment_type2"><input type="radio" name="appointment_type" id="appointment_type2" value="2" onchange="newPatientTypeToggle()"> Pet/Veternary</label>
+                                            <label for="appointment_type3"><input type="radio" name="appointment_type" id="appointment_type3" value="3" onchange="newPatientTypeToggle()"> Online Consultation</label>
+                                            <label for="appointment_type4"><input type="radio" name="appointment_type" id="appointment_type4" value="4" onchange="newPatientTypeToggle()"> Overseas</label>
+                                        </div>
+                                    </div>
+                                    <div class="card-block ptfm">
                                         <form method="post"
                                               action="/saveCustomer">
                                             <div class="col-sm-12">
@@ -291,6 +301,124 @@
                                             </div>
                                         </form>
                                     </div>
+                                    <div class="card-block pptfm" style="display:none;">
+                                        <form method="post"
+                                              action="/savePetCustomer">
+                                            <div class="col-sm-12">
+                                                <div class="form-group row">
+                                                    <div class="col-sm-6">
+                                                        <div class="row form-group">
+                                                            <label class="col-sm-3 col-form-label">Pet Name</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" name="petname" id="petname"
+                                                                    class="form-control {{ $errors->has('petname') ? ' is-invalid' : '' }}"
+                                                                    value="{{$customer->petname}}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="row form-group">
+                                                            <label class="col-sm-3 col-form-label">Pet Breed</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" name="petbreed" id="petbreed"
+                                                                    class="form-control {{ $errors->has('petbreed') ? ' is-invalid' : '' }}"
+                                                                    value="{{$customer->petbreed}}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="row form-group">
+                                                            <label class="col-sm-3 col-form-label">Owner Name</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" name="ownerName" id="ownerName"
+                                                                    class="form-control {{ $errors->has('ownerName') ? ' is-invalid' : '' }}"
+                                                                    value="{{$customer->ownerName}}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="row form-group">
+                                                            <label class="col-sm-3 col-form-label">Age</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" name="age" id="age"
+                                                                    class="form-control {{ $errors->has('age') ? ' is-invalid' : '' }}"
+                                                                    value="{{$customer->age}}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="row form-group">
+                                                            <label class="col-sm-3 col-form-label">Whats App Number</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" name="whatsAppnum" id="whatsAppnum"
+                                                                    class="form-control {{ $errors->has('whatsAppnum') ? ' is-invalid' : '' }}"
+                                                                    value="{{$customer->whatsAppnum}}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="row form-group">
+                                                            <label class="col-sm-3 col-form-label">Email ID</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" name="ownerEmail" id="ownerEmail"
+                                                                    class="form-control {{ $errors->has('ownerEmail') ? ' is-invalid' : '' }}"
+                                                                    value="{{$customer->ownerEmail}}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row form-group">
+                                                            <label class="col-sm-1 col-form-label">Address</label>
+                                                            <div class="col-sm-11">
+                                                                <textarea name="dogaddress" id="dogaddress" class="form-control {{ $errors->has('dogaddress') ? ' is-invalid' : '' }}" rows="4">{{$customer->dogaddress}}</textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row form-group">
+                                                            <label class="col-sm-1 col-form-label">How did you came to know about us ?</label>
+                                                            <div class="col-sm-11">
+                                                                <textarea name="dogaddress" id="dogaddress" class="form-control {{ $errors->has('dogaddress') ? ' is-invalid' : '' }}" rows="4">{{$customer->dogaddress}}</textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row form-group">
+                                                            <label class="col-sm-1 col-form-label">Main Illness / Health Issue</label>
+                                                            <div class="col-sm-11">
+                                                                <textarea name="dogaddress" id="dogaddress" class="form-control {{ $errors->has('dogaddress') ? ' is-invalid' : '' }}" rows="4">{{$customer->dogaddress}}</textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="row form-group">
+                                                            <label class="col-sm-1 col-form-label">Weight</label>
+                                                            <div class="col-sm-11">
+                                                            <input type="text" name="dogweight" id="dogweight"
+                                                                    class="form-control {{ $errors->has('dogweight') ? ' is-invalid' : '' }}"
+                                                                    value="{{$customer->dogweight}}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="row form-group">
+                                                        <label class="col-sm-3 col-form-label">Date</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" name="dateofConsultation" id="dateofConsultation" class="form-control" value="{{$customer->dateofConsultation!=null ? \Carbon\Carbon::parse($customer->dateofConsultation)->format('d-m-Y'):''}}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="row form-group">
+                                                            <div class="col-sm-9">
+                                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
 
@@ -417,5 +545,16 @@
                 }
             });
         });
+
+        function newPatientTypeToggle() {
+            var type = $('input[name="appointment_type"]:checked').val();
+            if(type == 2) {
+                $('.ptfm').hide();
+                $('.pptfm').show();
+            } else {
+                $('.ptfm').show();
+                $('.pptfm').hide();
+            }
+        }
     </script>
 @endsection
