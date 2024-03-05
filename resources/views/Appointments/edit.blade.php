@@ -365,9 +365,9 @@
                                                         </div>
 
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Balance</label>
+                                                            <label class="col-sm-3 col-form-label">Paymemnt Method</label>
                                                             <div class="col-sm-9">
-                                                                {{ !empty($previous_follow_up->balancePayment) ? $previous_follow_up->balancePayment : 'NA' }}
+                                                                {{ !empty($previous_follow_up->paymentMode) ? $previous_follow_up->paymentMode : 'NA' }}
                                                             </div>
                                                         </div>
 
