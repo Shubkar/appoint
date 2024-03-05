@@ -185,7 +185,7 @@ class ReportsController extends Controller
                         class=\"feather icon-message-circle\"></i></a>";
             }
 
-            $wht->editappointment =  "<a href='/editAppointment/" . $wht->id . "' class='btn waves-effect waves-light btn-primary'><i
+            $wht->editappointment =  "<a href='/editAppointment/" . $wht->id . "' class='btn waves-effect waves-light btn-primary' target='_blank'><i
             class=\"feather icon-edit\" title='Edit'></i></a>";
 
         }
@@ -211,7 +211,7 @@ class ReportsController extends Controller
             request()->getHttpHost() . "/invoiceView?appointmentId=" . base64_encode($customer->id);
 
             //change over here
-            $action = "<a href='/editAppointment/" . $customer->id . "' class='btn waves-effect waves-light btn-primary'><i
+            $action = "<a href='/editAppointment/" . $customer->id . "' class='btn waves-effect waves-light btn-primary' target='_blank'><i
                     class=\"feather icon-edit\" title='Edit'></i></a>";
                     $action = $action . " | " . "<a href='#upload_Modal'
                         class='btn waves-effect waves-light btn-primary openLargeModal' data-toggle='modal'

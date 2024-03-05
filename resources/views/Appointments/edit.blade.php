@@ -344,6 +344,34 @@
                                                         </div>
 
                                                         <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Previous Aptmnt Date</label>
+                                                            <div class="col-sm-9">
+                                                                {{ date("d-m-Y H:i:s", strtotime($previous_follow_up->dtStart)) }}
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Chief Complaint</label>
+                                                            <div class="col-sm-9">
+                                                                {{ !empty($previous_follow_up->chiefComplaint) ? $previous_follow_up->chiefComplaint : 'NA' }}
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Fees</label>
+                                                            <div class="col-sm-9">
+                                                                {{ !empty($previous_follow_up->feeAmount) ? $previous_follow_up->feeAmount : 'NA' }}
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Balance</label>
+                                                            <div class="col-sm-9">
+                                                                {{ !empty($previous_follow_up->balancePayment) ? $previous_follow_up->balancePayment : 'NA' }}
+                                                            </div>
+                                                        </div>
+
+                                                    <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Date</label>
                                                     <div class="col-sm-7">
                                                         <input type="text" name="dateFrom" id="dateFrom" autocomplete="off"

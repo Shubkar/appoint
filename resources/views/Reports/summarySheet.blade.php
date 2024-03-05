@@ -558,6 +558,11 @@
 
                  $("#select_patient").append(option);
                }
+
+               var PatientId = localStorage.getItem('PatientId');
+               if (PatientId !== null) {
+                    $('#select_patient').val(PatientId);
+                }
                /* @if(session()->has('PatientId'))
                 $('#select_patient').val('{{session()->get("PatientId")}}');
                 $('#select_patient').trigger('change');
@@ -648,6 +653,11 @@
             $.post("/appointments/getFromServer", {calendarId: $('#calendarId').val()}, function(result){
                 // console.log(result);
             });
+        }
+
+        var DocUserId = localStorage.getItem('userId');
+        if (DocUserId !== null) {
+            $('#userId').val(DocUserId);
         }
 
             $("#dateTo").datepicker({
@@ -1008,6 +1018,9 @@
             job_end_date[1] = job_end_date[1] - 1;
             var new_start_date = new Date(job_start_date[2], job_start_date[1], job_start_date[0]);
             var new_end_date = new Date(job_end_date[2], job_end_date[1], job_end_date[0]);
+
+            localStorage.setItem('PatientId',$( "#select_patient" ).val());
+            localStorage.setItem('userId',$( "#userId" ).val());
 
             if (new_end_date >= new_start_date) {
                if(frmButton)

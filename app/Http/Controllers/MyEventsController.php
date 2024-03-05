@@ -69,6 +69,15 @@ class MyEventsController extends Controller
         $paymodes=\trim(MasterData::find(2)->masterValues);
         $paymodes=str_ireplace(array("\r","\n",'\r','\n'),',', $paymodes);
 
+        
+        $previous_follow_up = DB::table('my_events AS current_event')
+            ->select('current_event.*')
+            ->where('current_event.caseId', $appointment->caseId)
+            ->where('current_event.dtStart', '<', now()) // Assuming now() returns the current datetime
+            ->orderByDesc('current_event.dtStart')
+            ->limit(1)
+            ->first();
+
          $appointment->caseId= strtoupper(\trim($appointment->caseId));
          if($appointment->caseId=='NC' || $appointment->caseId=='N/C' || $appointment->caseId=='N\\C')
          {
@@ -109,8 +118,7 @@ class MyEventsController extends Controller
         $calendarUrl=User::find($appointment->userId)->calendarUrl;
         $customer = Customer::select('id')->where('caseId', $appointment->caseId)->first();
         
-         return
-        view('Appointments.edit',compact('appointment','today','appointmentDate','appointmentTime','paidAmount','calendarUrl','pharmacistNo','user','paymodes','customer'));
+         return view('Appointments.edit',compact('appointment','today','appointmentDate','appointmentTime','paidAmount','calendarUrl','pharmacistNo','user','paymodes','customer','previous_follow_up'));
     }
 
     public function sickLeave($appointmentId)
